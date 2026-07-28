@@ -1,28 +1,28 @@
-import { NamePayData } from "./qr";
+export type ViewMode = 
+  | 'qr-studio' 
+  | 'invoice-studio' 
+  | 'marketing-hub' 
+  | 'business-assistant' 
+  | 'merchant-toolbox' 
+  | 'customer-management' 
+  | 'marketplace';
 
-export type ViewMode = 'qr-studio' | 'poster-designer' | 'invoice-studio' | 'business-tools' | 'marketplace' | 'ai-assistant';
+export type Language = 'English' | 'Hindi' | 'Odia' | 'Bengali';
 
-export interface MerchantProfile {
-  businessName: string;
-  ownerName: string;
+export interface Customer {
+  id: string;
+  name: string;
   phone: string;
-  email: string;
-  website?: string;
-  gstNumber?: string;
-  category: string;
-  address: string;
-  workingHours?: string;
-  upiId: string;
-  secondaryUpiId?: string;
-  instagram?: string;
-  whatsapp?: string;
-  googleMapsUrl?: string;
-  logoUrl?: string;
+  gstin?: string;
+  totalDue: number;
+  lastInvoiceDate?: string;
+  notes?: string;
 }
 
 export interface InvoiceItem {
   id: string;
   description: string;
+  hsnCode?: string;
   quantity: number;
   rate: number;
   amount: number;
@@ -30,22 +30,22 @@ export interface InvoiceItem {
 
 export interface InvoiceDocument {
   id: string;
-  type: 'gst' | 'non-gst' | 'estimate' | 'receipt';
+  type: 'gst' | 'non-gst' | 'estimate' | 'quotation' | 'receipt' | 'proforma';
   invoiceNumber: string;
   date: string;
   customerName: string;
   customerPhone: string;
-  customerGst?: string;
   items: InvoiceItem[];
   gstRate: number;
   discount: number;
+  shipping: number;
   notes: string;
   paid: boolean;
 }
 
 export interface AnalyticsData {
+  qrDownloads: number;
   posterDownloads: number;
-  qrCopies: number;
-  invoicesGenerated: number;
-  totalRevenueCollected: number;
+  invoicesCreated: number;
+  totalRevenue: number;
 }

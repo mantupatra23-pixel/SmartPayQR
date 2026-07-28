@@ -6,11 +6,13 @@ import { ActionButtons } from "@/components/qr/ActionButtons";
 import { InvoiceStudio } from "@/components/invoice/InvoiceStudio";
 import { AIAssistant } from "@/components/ai/AIAssistant";
 import { FinancialMarketplace } from "@/components/marketplace/FinancialMarketplace";
+import { MerchantToolbox } from "@/components/toolbox/MerchantToolbox";
+import { FloatingCopilot } from "@/components/ai/FloatingCopilot";
 import { NamePayData } from "@/types/qr";
 import { ViewMode } from "@/types/suite";
 import { 
-  QrCode, Sparkles, ShieldCheck, Store, User, Phone, 
-  DollarSign, MapPin, Receipt, Wand2, LayoutDashboard
+  QrCode, Sparkles, ShieldCheck, Receipt, Wand2, 
+  LayoutDashboard, Calculator
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -35,7 +37,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
       {/* Top Suite Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+      <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-tr from-emerald-600 to-teal-500 p-2 rounded-2xl text-white shadow-md">
@@ -43,14 +45,14 @@ export default function Home() {
             </div>
             <div>
               <h1 className="font-extrabold text-xl text-slate-900 tracking-tight leading-none">
-                SmartPay <span className="text-emerald-600">QR Suite</span>
+                SmartPay <span className="text-emerald-600">AI OS</span>
               </h1>
-              <p className="text-[10px] text-slate-500 font-medium">India's Free Merchant Ecosystem</p>
+              <p className="text-[10px] text-slate-500 font-medium">Merchant Operating System</p>
             </div>
           </div>
 
-          {/* Mode Switcher */}
-          <div className="hidden md:flex items-center bg-slate-100 p-1 rounded-2xl border">
+          {/* Navigation Bar */}
+          <div className="hidden lg:flex items-center bg-slate-100 p-1 rounded-2xl border">
             <button
               onClick={() => setActiveTab('qr-studio')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
@@ -65,15 +67,23 @@ export default function Home() {
                 activeTab === 'invoice-studio' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
               }`}
             >
-              <Receipt className="w-3.5 h-3.5" /> GST Invoicing
+              <Receipt className="w-3.5 h-3.5" /> GST Invoice
             </button>
             <button
-              onClick={() => setActiveTab('ai-assistant')}
+              onClick={() => setActiveTab('marketing-hub')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                activeTab === 'ai-assistant' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                activeTab === 'marketing-hub' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
               }`}
             >
               <Wand2 className="w-3.5 h-3.5" /> AI Engine
+            </button>
+            <button
+              onClick={() => setActiveTab('merchant-toolbox')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                activeTab === 'merchant-toolbox' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+              }`}
+            >
+              <Calculator className="w-3.5 h-3.5" /> Calculators
             </button>
             <button
               onClick={() => setActiveTab('marketplace')}
@@ -86,7 +96,7 @@ export default function Home() {
           </div>
 
           <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" /> NPCI Verified
+            <ShieldCheck className="w-4 h-4 text-emerald-600" /> NPCI Compliant
           </span>
         </div>
       </header>
@@ -98,7 +108,7 @@ export default function Home() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
               <div className="flex justify-between items-center border-b pb-4">
                 <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-emerald-600" /> Payment Poster Customizer
+                  <Sparkles className="w-5 h-5 text-emerald-600" /> Payment Poster Studio
                 </h2>
               </div>
 
@@ -186,9 +196,18 @@ export default function Home() {
         )}
 
         {activeTab === 'invoice-studio' && <InvoiceStudio />}
-        {activeTab === 'ai-assistant' && <AIAssistant />}
+        {activeTab === 'marketing-hub' && <AIAssistant />}
+        {activeTab === 'merchant-toolbox' && <MerchantToolbox />}
         {activeTab === 'marketplace' && <FinancialMarketplace />}
       </main>
+
+      {/* Floating AI Copilot */}
+      <FloatingCopilot />
+
+      {/* Footer */}
+      <footer className="border-t border-slate-200 bg-white/60 py-6 text-center text-xs text-slate-500 mt-12">
+        <p>© 2026 SmartPay AI OS. Client-Side NPCI Compliant Operating Suite.</p>
+      </footer>
     </div>
   );
 }
