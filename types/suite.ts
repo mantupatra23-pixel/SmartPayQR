@@ -1,13 +1,15 @@
 export type NavigationTab = 
   | 'dashboard'
-  | 'poster-studio'
-  | 'invoice-writer'
-  | 'marketing-hub'
-  | 'poster-generator'
-  | 'business-assistant'
+  | 'payments'
+  | 'billing'
+  | 'ai-center'
+  | 'marketing'
+  | 'crm'
+  | 'analytics'
+  | 'inventory'
+  | 'online-presence'
+  | 'financial-services'
   | 'merchant-toolbox'
-  | 'qr-analytics'
-  | 'customer-management'
   | 'marketplace'
   | 'business-profile'
   | 'settings'
@@ -23,6 +25,16 @@ export interface Customer {
   totalDue: number;
   lastInvoiceDate?: string;
   notes?: string;
+  loyaltyPoints?: number;
+}
+
+export interface ProductItem {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  category: string;
+  hsnCode?: string;
 }
 
 export interface InvoiceItem {

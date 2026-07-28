@@ -12,7 +12,9 @@ import { AIPosterGenerator } from "@/components/generator/AIPosterGenerator";
 import { FinancialMarketplace } from "@/components/marketplace/FinancialMarketplace";
 import { MerchantToolbox } from "@/components/toolbox/MerchantToolbox";
 import { QRAnalytics } from "@/components/analytics/QRAnalytics";
-import { CustomerManagement } from "@/components/customers/CustomerManagement";
+import { CRMStudio } from "@/components/crm/CRMStudio";
+import { InventoryStudio } from "@/components/inventory/InventoryStudio";
+import { PresenceStudio } from "@/components/presence/PresenceStudio";
 import { MerchantSettings } from "@/components/settings/MerchantSettings";
 import { FloatingCopilot } from "@/components/ai/FloatingCopilot";
 import { NamePayData } from "@/types/qr";
@@ -42,7 +44,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -53,14 +55,14 @@ export default function Home() {
         setMobileOpen={setMobileOpen}
       />
 
-      {/* Main Content Area */}
+      {/* Content Area */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${collapsed ? 'lg:pl-20' : 'lg:pl-64'}`}>
         <HeaderBar setMobileOpen={setMobileOpen} />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {activeTab === 'dashboard' && <HomeDashboard setActiveTab={setActiveTab} />}
 
-          {activeTab === 'poster-studio' && (
+          {activeTab === 'payments' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <motion.div 
                 initial={{ opacity: 0, y: 10 }} 
@@ -79,7 +81,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <div>
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
-                      Poster Theme
+                      Poster Theme Style
                     </label>
                     <select
                       name="theme"
@@ -97,9 +99,7 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
-                      Business Name *
-                    </label>
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">Business Name *</label>
                     <div className="relative">
                       <Store className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                       <input
@@ -108,15 +108,13 @@ export default function Home() {
                         placeholder="e.g. Patra General Store"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
-                      UPI ID (VPA) *
-                    </label>
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">UPI ID (VPA) *</label>
                     <div className="relative">
                       <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                       <input
@@ -125,7 +123,7 @@ export default function Home() {
                         placeholder="e.g. merchant@okicici"
                         value={formData.upiId}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                   </div>
@@ -141,7 +139,7 @@ export default function Home() {
                           placeholder="9876543210"
                           value={formData.mobile}
                           onChange={handleChange}
-                          className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                         />
                       </div>
                     </div>
@@ -156,7 +154,7 @@ export default function Home() {
                           placeholder="₹ 0"
                           value={formData.amount}
                           onChange={handleChange}
-                          className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                         />
                       </div>
                     </div>
@@ -172,7 +170,7 @@ export default function Home() {
                         placeholder="e.g. Main Market Road, Sector 12"
                         value={formData.address}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full pl-10 pr-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                   </div>
@@ -187,20 +185,22 @@ export default function Home() {
             </div>
           )}
 
-          {activeTab === 'invoice-writer' && <InvoiceStudio />}
-          {activeTab === 'marketing-hub' && <AIAssistant />}
-          {activeTab === 'poster-generator' && <AIPosterGenerator />}
-          {activeTab === 'business-assistant' && <AIAssistant />}
+          {activeTab === 'billing' && <InvoiceStudio />}
+          {activeTab === 'inventory' && <InventoryStudio />}
+          {activeTab === 'ai-center' && <AIAssistant />}
+          {activeTab === 'marketing' && <AIPosterGenerator />}
+          {activeTab === 'crm' && <CRMStudio />}
+          {activeTab === 'online-presence' && <PresenceStudio />}
+          {activeTab === 'financial-services' && <FinancialMarketplace />}
           {activeTab === 'merchant-toolbox' && <MerchantToolbox />}
-          {activeTab === 'qr-analytics' && <QRAnalytics />}
-          {activeTab === 'customer-management' && <CustomerManagement />}
+          {activeTab === 'analytics' && <QRAnalytics />}
           {activeTab === 'marketplace' && <FinancialMarketplace />}
           {activeTab === 'business-profile' && <MerchantSettings />}
           {activeTab === 'settings' && <MerchantSettings />}
           {activeTab === 'help-support' && (
             <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-4">
-              <h2 className="text-xl font-bold text-slate-900">Help & Support</h2>
-              <p className="text-xs text-slate-500">Need help setting up your merchant account or generating invoices?</p>
+              <h2 className="text-xl font-bold text-slate-900">Merchant Help & Support</h2>
+              <p className="text-xs text-slate-500">Need help setting up your merchant account, QR posters, or GST invoices?</p>
               <p className="text-xs font-semibold text-emerald-600">Contact Support: support@smartpayqr.in</p>
             </div>
           )}
