@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Download, Printer, Copy, FileText, Share2, Check } from "lucide-react";
+import { trackActivity } from "@/lib/analyticsTracker";
 
 interface ActionButtonsProps {
   posterRef: React.RefObject<HTMLDivElement>;
@@ -25,6 +26,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId, 
       link.href = image;
       link.download = `${name || 'SmartPay'}-QR-Poster.png`;
       link.click();
+      trackActivity("qrDownloads", `Downloaded Ultra HD PNG poster for ${name || 'Store'}`, "PNG Export");
     } finally {
       setLoading(false);
     }
@@ -41,6 +43,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId, 
       
       pdf.addImage(imgData, "PNG", (pdfWidth - 140) / 2, 20, 140, (canvas.height * 140) / canvas.width);
       pdf.save(`${name || 'SmartPay'}-QR-Poster.pdf`);
+      trackActivity("pdfDownloads", `Exported A4 PDF poster for ${name || 'Store'}`, "PDF Export");
     } finally {
       setLoading(false);
     }
@@ -49,16 +52,19 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId, 
   const handleShareWhatsApp = () => {
     const text = `Pay ${name} instantly via UPI:\nUPI ID: ${upiId}\n\nGenerated via SmartPay QR Studio`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+    trackActivity("whatsAppShares", `Shared UPI QR via WhatsApp`, "WhatsApp Share");
   };
 
   const handlePrint = () => {
     window.print();
+    trackActivity("posterShares", `Printed QR poster for ${name || 'Store'}`, "Print Event");
   };
 
   const handleCopyUPI = () => {
     if (!upiId) return;
     navigator.clipboard.writeText(upiId);
     setCopied(true);
+    trackActivity("posterShares", `Copied UPI VPA: ${upiId}`, "Clipboard");
     setTimeout(() => setCopied(false), 2000);
   };
 

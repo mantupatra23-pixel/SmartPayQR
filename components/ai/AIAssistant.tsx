@@ -6,6 +6,7 @@ import {
   Share2, RefreshCw, Languages, Loader2, Heart, QrCode, 
   MapPin, MessageCircle, AlertCircle, Lightbulb, TrendingUp, Package, DollarSign
 } from "lucide-react";
+import { trackActivity } from "@/lib/analyticsTracker";
 
 interface AIResultData {
   shopNames?: string[];
@@ -81,6 +82,7 @@ export const AIAssistant: React.FC = () => {
       }
 
       setAiData(data);
+      trackActivity("aiGenerationsUsed", `Generated Groq AI Suite for ${selectedCategory} (${language})`, "Groq AI");
     } catch (err: any) {
       setError(err.message || "Failed to generate AI content. Check your API key or connection.");
     } finally {
@@ -153,7 +155,6 @@ export const AIAssistant: React.FC = () => {
 
   return (
     <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl max-w-7xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between border-b pb-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white rounded-2xl shadow-lg shadow-emerald-500/20">
@@ -166,7 +167,6 @@ export const AIAssistant: React.FC = () => {
         </div>
       </div>
 
-      {/* Input Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end bg-slate-50 p-4 rounded-2xl border border-slate-200">
         <div className="sm:col-span-5">
           <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
@@ -225,7 +225,6 @@ export const AIAssistant: React.FC = () => {
         </div>
       </div>
 
-      {/* Error Alert */}
       {error && (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-3 text-rose-700 text-xs font-semibold">
           <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
@@ -233,7 +232,6 @@ export const AIAssistant: React.FC = () => {
         </div>
       )}
 
-      {/* Generated Results Grid */}
       {aiData && (
         <div className="space-y-6 pt-2">
           <div className="flex justify-between items-center border-b pb-2">

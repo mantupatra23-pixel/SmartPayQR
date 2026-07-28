@@ -5,6 +5,7 @@ import { InvoiceDocument, InvoiceItem } from "@/types/suite";
 import { Plus, Trash2, Printer, Download, Receipt } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { trackActivity } from "@/lib/analyticsTracker";
 
 export const InvoiceStudio: React.FC = () => {
   const [invoice, setInvoice] = useState<InvoiceDocument>({
@@ -64,11 +65,12 @@ export const InvoiceStudio: React.FC = () => {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     pdf.addImage(imgData, "PNG", 0, 10, pdfWidth, (canvas.height * pdfWidth) / canvas.width);
     pdf.save(`${invoice.invoiceNumber}.pdf`);
+
+    trackActivity("invoicesCreated", `Generated ${invoice.type.toUpperCase()} #${invoice.invoiceNumber}`, "Invoice PDF", grandTotal);
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      {/* Invoice Form */}
       <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
         <div className="flex items-center justify-between border-b pb-4">
           <div>
@@ -132,7 +134,6 @@ export const InvoiceStudio: React.FC = () => {
           </div>
         </div>
 
-        {/* Dynamic Item Table */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Line Items</h3>
@@ -175,7 +176,6 @@ export const InvoiceStudio: React.FC = () => {
         </div>
       </div>
 
-      {/* Invoice Live Printable Preview */}
       <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-xl space-y-4">
         <div ref={invoiceRef} className="bg-slate-50 p-6 rounded-2xl border text-slate-800 space-y-4 font-sans">
           <div className="flex justify-between items-start border-b pb-4">

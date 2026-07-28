@@ -2,7 +2,8 @@
 
 import React from "react";
 import { AffiliateOffer } from "@/config/affiliates";
-import { ExternalLink, Star, ShieldCheck, Zap, CreditCard, Wallet, Briefcase } from "lucide-react";
+import { ExternalLink, Star, ShieldCheck, CreditCard, Wallet, Briefcase } from "lucide-react";
+import { trackActivity } from "@/lib/analyticsTracker";
 
 export const AffiliateCard: React.FC<AffiliateOffer> = ({
   title,
@@ -10,7 +11,6 @@ export const AffiliateCard: React.FC<AffiliateOffer> = ({
   category,
   buttonText,
   url,
-  badge,
   rating,
   benefits,
   accentColor,
@@ -45,15 +45,17 @@ export const AffiliateCard: React.FC<AffiliateOffer> = ({
 
   const theme = colorStyles[accentColor];
 
+  const handleLinkClick = () => {
+    trackActivity("marketplaceClicks", `Clicked Marketplace Lead Offer: ${title}`, "Marketplace");
+  };
+
   return (
     <div
       className={`bg-white rounded-3xl p-6 border ${theme.border} shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-1`}
     >
-      {/* Background Gradient Glow */}
       <div className={`absolute inset-0 bg-gradient-to-br ${theme.glow} opacity-100 pointer-events-none`} />
 
       <div>
-        {/* Top Badges */}
         <div className="flex justify-between items-center mb-4">
           <span className={`text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full border ${theme.badgeBg}`}>
             {category}
@@ -64,13 +66,12 @@ export const AffiliateCard: React.FC<AffiliateOffer> = ({
           </div>
         </div>
 
-        {/* Card Header & Icon */}
         <div className="flex items-start gap-3.5 mb-3">
           <div className={`p-3 rounded-2xl ${theme.iconBg} shrink-0`}>
             {theme.icon}
           </div>
           <div>
-            <h3 className="text-base font-extrabold text-slate-900 group-hover:text-slate-900 transition-colors leading-snug">
+            <h3 className="text-base font-extrabold text-slate-900 leading-snug">
               {title}
             </h3>
             <p className="text-xs font-semibold text-slate-600 mt-0.5">
@@ -79,23 +80,21 @@ export const AffiliateCard: React.FC<AffiliateOffer> = ({
           </div>
         </div>
 
-        {/* Benefits Description */}
         <p className="text-xs text-slate-500 leading-relaxed mb-4">
           {benefits}
         </p>
 
-        {/* Special WeRize / Trusted Partner Indicator */}
         <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 mb-4 bg-slate-50 p-2 rounded-xl border border-slate-100">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span>{isWeRize ? "Official WeRize Financial Partner" : "100% Certified Financial Partner"}</span>
         </div>
       </div>
 
-      {/* CTA Button */}
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={handleLinkClick}
         className={`w-full inline-flex items-center justify-center gap-2 ${theme.btnBg} text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-lg active:scale-95`}
       >
         {buttonText} <ExternalLink className="w-3.5 h-3.5" />

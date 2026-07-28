@@ -22,6 +22,7 @@ import { NamePayData } from "@/types/qr";
 import { NavigationTab } from "@/types/suite";
 import { Sparkles, Store, User, Phone, DollarSign, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
+import { trackActivity } from "@/lib/analyticsTracker";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
@@ -41,7 +42,12 @@ export default function Home() {
   const posterRef = useRef<HTMLDivElement>(null!);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const updated = { ...formData, [e.target.name]: e.target.value };
+    setFormData(updated);
+
+    if (e.target.name === "upiId" && e.target.value.trim().length > 3) {
+      trackActivity("qrGenerations", `Generated live payment QR for ${updated.name || "Store"}`, "Live QR");
+    }
   };
 
   return (
