@@ -283,3 +283,74 @@ model AiHistory {
 
   @@index([merchantId])
 }
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum GatewayType {
+  UPI_INTENT
+  RAZORPAY
+  CASHFREE
+  PHONEPE
+}
+
+model PaymentGatewayConfig {
+  id                  String   @id @default(cuid())
+  merchantId          String   @unique
+  razorpayKeyId       String?
+  razorpayKeySecret   String?
+  cashfreeAppId       String?
+  cashfreeSecretKey   String?
+  phonepeClientId     String?
+  phonepeClientSecret String?
+  merchantVpa         String?  // UPI ID for direct intent
+  updatedAt           DateTime @updatedAt
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  merchantId     String
+  orderId        String        @unique
+  gateway        GatewayType
+  gatewayOrderId String?
+  transactionId  String?       // Real UTR / Bank Ref
+  amount         Float
+  currency       String        @default("INR")
+  status         PaymentStatus @default(PENDING)
+  customerName   String?
+  customerMobile String?
+  invoiceId      String?
+  signature      String?
+  rawWebhookData String?       @db.Text
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  refunds  Refund[]
+
+  @@index([merchantId])
+  @@index([orderId])
+  @@index([transactionId])
+}
+
+model Refund {
+  id               String   @id @default(cuid())
+  merchantId       String
+  paymentId        String
+  gatewayRefundId  String   @unique
+  amount           Float
+  reason           String?
+  status           String   @default("PROCESSED")
+  createdAt        DateTime @default(now())
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  payment  Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId])
+}
