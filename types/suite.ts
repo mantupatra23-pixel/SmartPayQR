@@ -1,4 +1,5 @@
 export type NavigationTab = 
+  | 'dashboard'
   | 'poster-studio'
   | 'invoice-writer'
   | 'marketing-hub'
@@ -8,7 +9,9 @@ export type NavigationTab =
   | 'qr-analytics'
   | 'customer-management'
   | 'marketplace'
-  | 'settings';
+  | 'business-profile'
+  | 'settings'
+  | 'help-support';
 
 export type Language = 'English' | 'Hindi' | 'Odia' | 'Bengali';
 
