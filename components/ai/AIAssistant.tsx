@@ -4,20 +4,31 @@ import React, { useState } from "react";
 import { 
   Wand2, Sparkles, Copy, Check, Store, MessageSquareQuote, 
   Share2, RefreshCw, Languages, Loader2, Heart, QrCode, 
-  MapPin, MessageCircle, AlertCircle
+  MapPin, MessageCircle, AlertCircle, Lightbulb, TrendingUp, Package, DollarSign
 } from "lucide-react";
 
 interface AIResultData {
   shopNames?: string[];
   taglines?: string[];
-  googleBusinessDescriptions?: string[];
+  qrPosterText?: string[];
   whatsappPromotions?: string[];
   festivalOffers?: string[];
-  instagramCaptions?: string[];
-  smsMarketing?: string[];
-  thankYouMessages?: string[];
-  qrPosterText?: string[];
   googleReviewRequest?: string[];
+  facebookPosts?: string[];
+  instagramCaptions?: string[];
+  shortsScript?: string[];
+  smsMarketing?: string[];
+  emailCampaigns?: string[];
+  referralMessages?: string[];
+  customerWelcomeMessages?: string[];
+  thankYouMessages?: string[];
+  invoiceFooterMessages?: string[];
+  googleBusinessDescriptions?: string[];
+  growthTips?: string[];
+  pricingSuggestions?: string[];
+  inventorySuggestions?: string[];
+  retentionTips?: string[];
+  profitImprovementTips?: string[];
 }
 
 export const AIAssistant: React.FC = () => {
@@ -99,21 +110,20 @@ export const AIAssistant: React.FC = () => {
     if (!items || items.length === 0) return null;
 
     return (
-      <div className="space-y-3 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80">
-        <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b pb-2">
+      <div className="space-y-3 bg-slate-50/80 p-5 rounded-2xl border border-slate-200">
+        <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b pb-2">
           {icon} {title}
         </h3>
         <div className="space-y-2.5">
           {items.map((item, idx) => (
             <div 
               key={idx} 
-              className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-emerald-300 transition-all"
+              className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-emerald-300 transition-all"
             >
               <p className="text-xs font-semibold text-slate-800 leading-relaxed">{item}</p>
               <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
                 <button
                   onClick={() => toggleFavorite(item)}
-                  title="Favorite"
                   className={`p-1.5 rounded-lg border transition ${
                     favorites[item] ? 'bg-rose-50 text-rose-600 border-rose-200' : 'text-slate-400 hover:text-slate-600 border-slate-200'
                   }`}
@@ -122,7 +132,6 @@ export const AIAssistant: React.FC = () => {
                 </button>
                 <button
                   onClick={() => shareText(item)}
-                  title="Share"
                   className="p-1.5 text-slate-400 hover:text-slate-600 border border-slate-200 rounded-lg transition"
                 >
                   <Share2 className="w-3.5 h-3.5" />
@@ -143,7 +152,7 @@ export const AIAssistant: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl max-w-5xl mx-auto space-y-6">
+    <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between border-b pb-4">
         <div className="flex items-center gap-3">
@@ -152,7 +161,7 @@ export const AIAssistant: React.FC = () => {
           </div>
           <div>
             <h2 className="text-xl font-black text-slate-900">Groq AI Merchant Suite</h2>
-            <p className="text-xs text-slate-500 mt-0.5">ChatGPT engine tuned specifically for Indian Dukandars & Small Businesses.</p>
+            <p className="text-xs text-slate-500 mt-0.5">Multi-lingual AI marketing & business growth engine for small businesses.</p>
           </div>
         </div>
       </div>
@@ -229,7 +238,7 @@ export const AIAssistant: React.FC = () => {
         <div className="space-y-6 pt-2">
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
-              Generated Content ({language})
+              Generated AI Content Suite ({language})
             </span>
             <button
               onClick={handleGenerate}
@@ -247,6 +256,21 @@ export const AIAssistant: React.FC = () => {
             {renderCardSection("WhatsApp Promotions", <MessageCircle className="w-4 h-4 text-emerald-600" />, aiData.whatsappPromotions)}
             {renderCardSection("Festival Offers & Discounts", <Sparkles className="w-4 h-4 text-amber-500" />, aiData.festivalOffers)}
             {renderCardSection("Google Review Requests", <MapPin className="w-4 h-4 text-blue-500" />, aiData.googleReviewRequest)}
+            {renderCardSection("Facebook Ad Copies", <Share2 className="w-4 h-4 text-blue-600" />, aiData.facebookPosts)}
+            {renderCardSection("Instagram Captions & Hashtags", <Sparkles className="w-4 h-4 text-pink-500" />, aiData.instagramCaptions)}
+            {renderCardSection("YouTube Shorts Scripts", <Sparkles className="w-4 h-4 text-red-500" />, aiData.shortsScript)}
+            {renderCardSection("SMS Marketing Messages", <MessageCircle className="w-4 h-4 text-emerald-600" />, aiData.smsMarketing)}
+            {renderCardSection("Email Marketing Campaigns", <MessageSquareQuote className="w-4 h-4 text-indigo-500" />, aiData.emailCampaigns)}
+            {renderCardSection("Customer Referral Messages", <Share2 className="w-4 h-4 text-teal-600" />, aiData.referralMessages)}
+            {renderCardSection("Customer Welcome Messages", <Store className="w-4 h-4 text-emerald-600" />, aiData.customerWelcomeMessages)}
+            {renderCardSection("Thank You Messages", <Sparkles className="w-4 h-4 text-amber-500" />, aiData.thankYouMessages)}
+            {renderCardSection("Invoice Footer Messages", <MessageSquareQuote className="w-4 h-4 text-slate-600" />, aiData.invoiceFooterMessages)}
+            {renderCardSection("Google Business Descriptions", <MapPin className="w-4 h-4 text-blue-500" />, aiData.googleBusinessDescriptions)}
+            {renderCardSection("AI Business Growth Tips", <TrendingUp className="w-4 h-4 text-emerald-600" />, aiData.growthTips)}
+            {renderCardSection("AI Pricing Suggestions", <DollarSign className="w-4 h-4 text-amber-500" />, aiData.pricingSuggestions)}
+            {renderCardSection("AI Inventory Suggestions", <Package className="w-4 h-4 text-indigo-500" />, aiData.inventorySuggestions)}
+            {renderCardSection("Customer Retention Tips", <Lightbulb className="w-4 h-4 text-teal-500" />, aiData.retentionTips)}
+            {renderCardSection("Profit Improvement Tips", <TrendingUp className="w-4 h-4 text-emerald-600" />, aiData.profitImprovementTips)}
           </div>
         </div>
       )}
