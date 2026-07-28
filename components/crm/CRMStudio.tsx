@@ -4,26 +4,30 @@ import React, { useState, useEffect } from "react";
 import { 
   Users, UserPlus, Search, Filter, Phone, MessageCircle, Mail, 
   Gift, Heart, Award, CreditCard, Download, Upload, Plus, Trash2, 
-  Edit3, Eye, DollarSign, Calendar, AlertCircle, CheckCircle2, X, Sparkles
+  Edit3, Eye, DollarSign, Calendar, AlertCircle, CheckCircle2, X, Sparkles, Bot, Settings
 } from "lucide-react";
-import { CustomerProfile, LedgerEntry } from "@/types/crm";
+import { CustomerProfile, LedgerEntry, LoyaltyRuleConfig } from "@/types/crm";
 import { 
   getCRMCustomers, addCustomer, updateCustomer, deleteCustomer, 
-  addLedgerEntry, getCRMAnalytics, getTodayOccasions, 
+  addLedgerEntry, logCustomerPurchase, getCRMAnalytics, getTodayOccasions, 
   exportCustomersToCSV, getLoyaltyConfig, saveLoyaltyConfig 
 } from "@/lib/crmEngine";
+import { WhatsAppBotStudio } from "./WhatsAppBotStudio";
 
 export const CRMStudio: React.FC = () => {
   const [customers, setCustomers] = useState<CustomerProfile[]>([]);
   const [analytics, setAnalytics] = useState(getCRMAnalytics());
   const [occasions, setOccasions] = useState(getTodayOccasions());
+  const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyRuleConfig>(getLoyaltyConfig());
   
   // UI States
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "active" | "inactive" | "vip" | "due">("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isLoyaltyModalOpen, setIsLoyaltyModalOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<CustomerProfile | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerProfile | null>(null);
-  const [activeSubTab, setActiveSubTab] = useState<"directory" | "ledger" | "loyalty" | "occasions">("directory");
+  const [activeSubTab, setActiveSubTab] = useState<"directory" | "occasions" | "bot">("directory");
 
   // Form State for Adding / Editing
   const [formData, setFormData] = useState({
@@ -41,7 +45,7 @@ export const CRMStudio: React.FC = () => {
     isVip: false
   });
 
-  // Ledger Add Modal State
+  // Ledger Add Form State
   const [ledgerForm, setLedgerForm] = useState({
     type: "credit" as "credit" | "payment",
     amount: 0,
@@ -49,11 +53,18 @@ export const CRMStudio: React.FC = () => {
     dueDate: ""
   });
 
+  // Purchase History Form State
+  const [purchaseForm, setPurchaseForm] = useState({
+    amount: 0,
+    itemsSummary: ""
+  });
+
   const syncCRM = () => {
     const fresh = getCRMCustomers();
     setCustomers(fresh);
     setAnalytics(getCRMAnalytics());
     setOccasions(getTodayOccasions());
+    setLoyaltyConfig(getLoyaltyConfig());
   };
 
   useEffect(() => {
@@ -62,20 +73,60 @@ export const CRMStudio: React.FC = () => {
     return () => window.removeEventListener("smartpay_crm_updated", syncCRM);
   }, []);
 
-  const handleCreateCustomer = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name.trim() || !formData.mobile.trim()) return;
-
-    addCustomer({
-      ...formData,
-      whatsapp: formData.whatsapp || formData.mobile
-    });
-
+  const openAddModal = () => {
+    setEditingCustomer(null);
     setFormData({
       name: "", mobile: "", whatsapp: "", email: "", address: "", city: "",
       dob: "", anniversary: "", gstin: "", notes: "", status: "active", isVip: false
     });
+    setIsAddModalOpen(true);
+  };
+
+  const openEditModal = (customer: CustomerProfile) => {
+    setEditingCustomer(customer);
+    setFormData({
+      name: customer.name,
+      mobile: customer.mobile,
+      whatsapp: customer.whatsapp,
+      email: customer.email || "",
+      address: customer.address || "",
+      city: customer.city || "",
+      dob: customer.dob || "",
+      anniversary: customer.anniversary || "",
+      gstin: customer.gstin || "",
+      notes: customer.notes || "",
+      status: customer.status,
+      isVip: customer.isVip
+    });
+    setIsAddModalOpen(true);
+  };
+
+  const handleSaveCustomer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.mobile.trim()) return;
+
+    if (editingCustomer) {
+      updateCustomer({
+        ...editingCustomer,
+        ...formData,
+        whatsapp: formData.whatsapp || formData.mobile
+      });
+    } else {
+      addCustomer({
+        ...formData,
+        whatsapp: formData.whatsapp || formData.mobile
+      });
+    }
+
     setIsAddModalOpen(false);
+    syncCRM();
+  };
+
+  const handleSaveLoyaltyConfig = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveLoyaltyConfig(loyaltyConfig);
+    setIsLoyaltyModalOpen(false);
+    syncCRM();
   };
 
   const handleAddLedger = (e: React.FormEvent) => {
@@ -93,7 +144,17 @@ export const CRMStudio: React.FC = () => {
 
     setLedgerForm({ type: "credit", amount: 0, description: "", dueDate: "" });
     syncCRM();
-    // Refresh selected customer view
+    const updated = getCRMCustomers().find(c => c.id === selectedCustomer.id);
+    if (updated) setSelectedCustomer(updated);
+  };
+
+  const handleLogPurchase = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCustomer || purchaseForm.amount <= 0) return;
+
+    logCustomerPurchase(selectedCustomer.id, purchaseForm.amount, purchaseForm.itemsSummary || "General Purchase");
+    setPurchaseForm({ amount: 0, itemsSummary: "" });
+    syncCRM();
     const updated = getCRMCustomers().find(c => c.id === selectedCustomer.id);
     if (updated) setSelectedCustomer(updated);
   };
@@ -102,10 +163,11 @@ export const CRMStudio: React.FC = () => {
     if (confirm("Are you sure you want to delete this customer profile?")) {
       deleteCustomer(id);
       if (selectedCustomer?.id === id) setSelectedCustomer(null);
+      syncCRM();
     }
   };
 
-  // Search and Filter Logic
+  // Search & Filter
   const filteredCustomers = customers.filter(c => {
     const matchesSearch = 
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -133,7 +195,7 @@ export const CRMStudio: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Tab Controls */}
+      {/* Header Banner */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b pb-4">
           <div className="flex items-center gap-3">
@@ -142,13 +204,21 @@ export const CRMStudio: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-black text-slate-900">Merchant CRM & Customer Ledger</h2>
-              <p className="text-xs text-slate-500 mt-0.5">Manage real customer profiles, ledger credit, loyalty rules, and birthday greetings.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Manage real customer profiles, credit ledgers, loyalty rules, and WhatsApp bots.</p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => setIsAddModalOpen(true)}
+              onClick={() => setIsLoyaltyModalOpen(true)}
+              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-3 rounded-xl text-xs transition border"
+              title="Configure Loyalty Points"
+            >
+              <Settings className="w-3.5 h-3.5 text-slate-600" /> Loyalty Rules
+            </button>
+
+            <button
+              onClick={openAddModal}
               className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-md"
             >
               <UserPlus className="w-4 h-4" /> Add Customer
@@ -198,7 +268,7 @@ export const CRMStudio: React.FC = () => {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Sub Navigation Tabs */}
         <div className="flex border-b text-xs font-bold gap-4 overflow-x-auto">
           <button
             onClick={() => setActiveSubTab("directory")}
@@ -217,12 +287,17 @@ export const CRMStudio: React.FC = () => {
               </span>
             )}
           </button>
+          <button
+            onClick={() => setActiveSubTab("bot")}
+            className={`pb-2.5 border-b-2 transition whitespace-nowrap flex items-center gap-1.5 ${activeSubTab === "bot" ? "border-emerald-600 text-emerald-700" : "border-transparent text-slate-500"}`}
+          >
+            <Bot className="w-3.5 h-3.5 text-teal-600" /> WhatsApp Bot
+          </button>
         </div>
 
         {/* 1. CUSTOMER DIRECTORY VIEW */}
         {activeSubTab === "directory" && (
           <div className="space-y-4">
-            {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -248,7 +323,6 @@ export const CRMStudio: React.FC = () => {
               </select>
             </div>
 
-            {/* Empty State */}
             {filteredCustomers.length === 0 ? (
               <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-3">
                 <Users className="w-10 h-10 text-slate-300 mx-auto" />
@@ -257,7 +331,7 @@ export const CRMStudio: React.FC = () => {
                   Start adding customer details to track credit ledgers, loyalty points, and purchase history.
                 </p>
                 <button
-                  onClick={() => setIsAddModalOpen(true)}
+                  onClick={openAddModal}
                   className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs transition shadow-md mt-2"
                 >
                   <Plus className="w-4 h-4" /> Add Customer
@@ -285,13 +359,23 @@ export const CRMStudio: React.FC = () => {
                               <Phone className="w-3 h-3 text-slate-400" /> +91 {c.mobile}
                             </p>
                           </div>
-                          <button
-                            onClick={() => setSelectedCustomer(c)}
-                            className="p-1.5 text-slate-400 hover:text-emerald-600 bg-slate-50 hover:bg-emerald-50 rounded-lg transition"
-                            title="View Profile & Ledger"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
+                          
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => openEditModal(c)}
+                              className="p-1.5 text-slate-400 hover:text-blue-600 bg-slate-50 rounded-lg transition"
+                              title="Edit Customer"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setSelectedCustomer(c)}
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 bg-slate-50 hover:bg-emerald-50 rounded-lg transition"
+                              title="View Profile & Ledger"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-xl border mt-2">
@@ -362,20 +446,27 @@ export const CRMStudio: React.FC = () => {
             )}
           </div>
         )}
+
+        {/* 3. WHATSAPP BOT VIEW */}
+        {activeSubTab === "bot" && (
+          <WhatsAppBotStudio />
+        )}
       </div>
 
-      {/* --- ADD CUSTOMER MODAL --- */}
+      {/* --- ADD / EDIT CUSTOMER MODAL --- */}
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white p-6 rounded-3xl border shadow-2xl max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b pb-3">
-              <h3 className="text-base font-black text-slate-900">Add New Customer</h3>
+              <h3 className="text-base font-black text-slate-900">
+                {editingCustomer ? "Edit Customer Profile" : "Add New Customer"}
+              </h3>
               <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateCustomer} className="space-y-3 text-xs font-semibold">
+            <form onSubmit={handleSaveCustomer} className="space-y-3 text-xs font-semibold">
               <div>
                 <label className="text-slate-700 block mb-1">Customer Full Name *</label>
                 <input
@@ -471,7 +562,52 @@ export const CRMStudio: React.FC = () => {
                 type="submit"
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition"
               >
-                Save Customer Profile
+                {editingCustomer ? "Update Profile" : "Save Customer Profile"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* --- LOYALTY RULES CONFIG MODAL --- */}
+      {isLoyaltyModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white p-6 rounded-3xl border shadow-2xl max-w-md w-full space-y-4">
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="text-base font-black text-slate-900">Loyalty Program Settings</h3>
+              <button onClick={() => setIsLoyaltyModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveLoyaltyConfig} className="space-y-4 text-xs font-semibold">
+              <div>
+                <label className="text-slate-700 block mb-1">Points per ₹1 Spent</label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={loyaltyConfig.pointsPerRupee}
+                  onChange={(e) => setLoyaltyConfig({ ...loyaltyConfig, pointsPerRupee: Number(e.target.value) })}
+                  className="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none font-bold"
+                />
+                <p className="text-[10px] text-slate-400 mt-1">e.g. 0.01 = 1 Point earned for every ₹100 spent</p>
+              </div>
+
+              <div>
+                <label className="text-slate-700 block mb-1">Rupee Discount per 1 Point</label>
+                <input
+                  type="number"
+                  value={loyaltyConfig.redemptionRate}
+                  onChange={(e) => setLoyaltyConfig({ ...loyaltyConfig, redemptionRate: Number(e.target.value) })}
+                  className="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none font-bold"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition"
+              >
+                Save Loyalty Settings
               </button>
             </form>
           </div>
@@ -491,6 +627,34 @@ export const CRMStudio: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Log Purchase Form (Adds Loyalty Points) */}
+            <form onSubmit={handleLogPurchase} className="bg-amber-50/50 p-4 rounded-2xl border border-amber-200 space-y-3">
+              <h4 className="text-xs font-black uppercase text-amber-900">Record New Purchase (+Loyalty Points)</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="number"
+                  placeholder="Purchase Amount (₹) *"
+                  required
+                  value={purchaseForm.amount || ""}
+                  onChange={(e) => setPurchaseForm({ ...purchaseForm, amount: Number(e.target.value) })}
+                  className="px-3 py-2 text-xs bg-white border rounded-xl font-bold"
+                />
+                <input
+                  type="text"
+                  placeholder="Items Description"
+                  value={purchaseForm.itemsSummary}
+                  onChange={(e) => setPurchaseForm({ ...purchaseForm, itemsSummary: e.target.value })}
+                  className="px-3 py-2 text-xs bg-white border rounded-xl font-semibold"
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-xl text-xs"
+              >
+                Log Sale & Grant Points
+              </button>
+            </form>
 
             {/* Add Ledger Credit/Payment Form */}
             <form onSubmit={handleAddLedger} className="bg-slate-50 p-4 rounded-2xl border space-y-3">
