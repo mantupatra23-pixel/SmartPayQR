@@ -18,6 +18,7 @@ import { PresenceStudio } from "@/components/presence/PresenceStudio";
 import { MerchantSettings } from "@/components/settings/MerchantSettings";
 import { SupportStudio } from "@/components/support/SupportStudio";
 import { FloatingCopilot } from "@/components/ai/FloatingCopilot";
+import { AdSenseSlot } from "@/components/ads/AdSense";
 import { NamePayData } from "@/types/qr";
 import { NavigationTab } from "@/types/suite";
 import { Sparkles, Store, User, Phone, DollarSign, MapPin } from "lucide-react";
@@ -68,59 +69,64 @@ export default function Home() {
           {activeTab === 'dashboard' && <HomeDashboard setActiveTab={setActiveTab} />}
 
           {activeTab === 'payments' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
-                <div className="border-b pb-4">
-                  <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-emerald-600" /> Payment Poster Studio
-                  </h2>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Poster Theme Style</label>
-                    <select name="theme" value={formData.theme} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium">
-                      <option value="classic-emerald">Classic Emerald</option>
-                      <option value="royal-blue">Royal Blue</option>
-                      <option value="gold-luxury">Gold Luxury</option>
-                      <option value="dark-violet">Dark Violet</option>
-                      <option value="festive-red">Festive Red</option>
-                      <option value="minimal-white">Minimal White</option>
-                    </select>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+                  <div className="border-b pb-4">
+                    <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-emerald-600" /> Payment Poster Studio
+                    </h2>
                   </div>
 
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Business Name *</label>
-                    <input type="text" name="name" placeholder="e.g. Patra General Store" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 uppercase block mb-1">UPI ID (VPA) *</label>
-                    <input type="text" name="upiId" placeholder="e.g. merchant@okicici" value={formData.upiId} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div>
-                      <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Phone Number</label>
-                      <input type="text" name="mobile" placeholder="9876543210" value={formData.mobile} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
+                      <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Poster Theme Style</label>
+                      <select name="theme" value={formData.theme} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium">
+                        <option value="classic-emerald">Classic Emerald</option>
+                        <option value="royal-blue">Royal Blue</option>
+                        <option value="gold-luxury">Gold Luxury</option>
+                        <option value="dark-violet">Dark Violet</option>
+                        <option value="festive-red">Festive Red</option>
+                        <option value="minimal-white">Minimal White</option>
+                      </select>
                     </div>
+
                     <div>
-                      <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Fixed Amount (₹)</label>
-                      <input type="number" name="amount" placeholder="₹ 0" value={formData.amount} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
+                      <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Business Name *</label>
+                      <input type="text" name="name" placeholder="e.g. Patra General Store" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-slate-700 uppercase block mb-1">UPI ID (VPA) *</label>
+                      <input type="text" name="upiId" placeholder="e.g. merchant@okicici" value={formData.upiId} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Phone Number</label>
+                        <input type="text" name="mobile" placeholder="9876543210" value={formData.mobile} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Fixed Amount (₹)</label>
+                        <input type="number" name="amount" placeholder="₹ 0" value={formData.amount} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Shop Address / Tagline</label>
+                      <input type="text" name="address" placeholder="e.g. Main Market Road, Sector 12" value={formData.address} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
                     </div>
                   </div>
+                </motion.div>
 
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 uppercase block mb-1">Shop Address / Tagline</label>
-                    <input type="text" name="address" placeholder="e.g. Main Market Road, Sector 12" value={formData.address} onChange={handleChange} className="w-full px-4 py-3 text-sm bg-slate-50 border rounded-xl font-medium" />
-                  </div>
+                <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-xl flex flex-col items-center lg:sticky lg:top-24">
+                  <PosterPreview data={formData} posterRef={posterRef} />
+                  <ActionButtons posterRef={posterRef} upiId={formData.upiId} name={formData.name || "SmartPay"} />
                 </div>
-              </motion.div>
-
-              <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-xl flex flex-col items-center lg:sticky lg:top-24">
-                <PosterPreview data={formData} posterRef={posterRef} />
-                <ActionButtons posterRef={posterRef} upiId={formData.upiId} name={formData.name || "SmartPay"} />
               </div>
+
+              {/* Native Ad Unit Slot */}
+              <AdSenseSlot format="auto" />
             </div>
           )}
 
