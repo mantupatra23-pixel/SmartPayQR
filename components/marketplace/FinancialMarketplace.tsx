@@ -1,59 +1,88 @@
 "use client";
 
 import React from "react";
-import { MONETIZATION_CARDS } from "@/config/affiliates";
-import { ExternalLink, Star, ShieldCheck, Zap } from "lucide-react";
+import { MONETIZATION_OFFERS } from "@/config/affiliates";
+import { AffiliateCard } from "@/components/cards/AffiliateCard";
+import { Zap, Wallet, Briefcase, CreditCard } from "lucide-react";
 
 export const FinancialMarketplace: React.FC = () => {
+  const personalLoans = MONETIZATION_OFFERS.filter(o => o.category === "Personal Loan");
+  const businessLoans = MONETIZATION_OFFERS.filter(o => o.category === "Business Loan");
+  const creditCards = MONETIZATION_OFFERS.filter(o => o.category === "Credit Card");
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-4">
+    <div className="space-y-12">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-emerald-500/30 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-500" /> Merchant Financial Services & Hardware
-          </h2>
-          <p className="text-xs text-slate-500">Apply for pre-approved credit cards, current accounts, and soundboxes.</p>
-        </div>
-        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-          Official Bank Partners
-        </span>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {MONETIZATION_CARDS.map((card) => (
-          <div
-            key={card.id}
-            className="bg-white rounded-3xl p-5 border border-slate-200 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4 relative overflow-hidden group"
-          >
-            <div>
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                  {card.category}
-                </span>
-                <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {card.badge}
-                </span>
-              </div>
-
-              <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                {card.title}
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed mt-1.5">
-                {card.description}
-              </p>
-            </div>
-
-            <a
-              href={card.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-emerald-600 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-md"
-            >
-              {card.buttonText} <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+          <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 rounded-full text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <Zap className="w-3.5 h-3.5 text-amber-400" /> Pre-Approved Offers
           </div>
-        ))}
+          <h2 className="text-2xl font-black text-white tracking-tight">
+            Certified Loans & Credit Cards Marketplace
+          </h2>
+          <p className="text-xs text-emerald-200/80 mt-1 max-w-xl">
+            Instant online approval for personal loans, certified business loan advisor assistance, and lifetime free credit cards.
+          </p>
+        </div>
       </div>
+
+      {/* 1. PERSONAL LOAN SECTION (GREEN) */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2 border-b border-emerald-100 pb-3">
+          <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
+            <Wallet className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-extrabold text-slate-900">Personal Loans</h3>
+            <p className="text-xs text-slate-500">Fast online approval with zero collateral required</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {personalLoans.map((offer) => (
+            <AffiliateCard key={offer.id} {...offer} />
+          ))}
+        </div>
+      </section>
+
+      {/* 2. BUSINESS LOAN SECTION (BLUE) */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2 border-b border-blue-100 pb-3">
+          <div className="p-2 bg-blue-100 text-blue-700 rounded-xl">
+            <Briefcase className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-extrabold text-slate-900">Business & Advisor Loan Services</h3>
+            <p className="text-xs text-slate-500">Certified WeRize expert assistance in Ganjam & Odisha</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          {businessLoans.map((offer) => (
+            <AffiliateCard key={offer.id} {...offer} />
+          ))}
+        </div>
+      </section>
+
+      {/* 3. CREDIT CARDS SECTION (PURPLE) */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2 border-b border-purple-100 pb-3">
+          <div className="p-2 bg-purple-100 text-purple-700 rounded-xl">
+            <CreditCard className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-extrabold text-slate-900">Credit Cards</h3>
+            <p className="text-xs text-slate-500">Lifetime free, cashback, reward, and premium credit cards</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {creditCards.map((offer) => (
+            <AffiliateCard key={offer.id} {...offer} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
