@@ -36,6 +36,20 @@ enum MovementType {
   ADJUSTMENT
 }
 
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum GatewayType {
+  UPI_INTENT
+  RAZORPAY
+  CASHFREE
+  PHONEPE
+}
+
 model SuperAdmin {
   id        String    @id @default(cuid())
   email     String    @unique
@@ -75,18 +89,21 @@ model Merchant {
   updatedAt DateTime @updatedAt
 
   // Multi-Tenant Relations
-  users        MerchantUser[]
-  invoices     Invoice[]
-  products     Product[]
-  inventory    StockMovement[]
-  customers    Customer[]
-  suppliers    Supplier[]
-  qrPosters    QrPoster[]
-  aiLogs       AiHistory[]
-  campaigns    Campaign[]
-  auditLogs    AuditLog[]
-  sessions     ActiveSession[]
-  settings     MerchantSettings?
+  users           MerchantUser[]
+  invoices        Invoice[]
+  products        Product[]
+  inventory       StockMovement[]
+  customers       Customer[]
+  suppliers       Supplier[]
+  qrPosters       QrPoster[]
+  aiLogs          AiHistory[]
+  campaigns       Campaign[]
+  auditLogs       AuditLog[]
+  sessions        ActiveSession[]
+  settings        MerchantSettings?
+  gatewayConfig   PaymentGatewayConfig?
+  payments        Payment[]
+  refunds         Refund[]
 
   @@index([email])
   @@index([mobile])
@@ -108,26 +125,26 @@ model MerchantUser {
 }
 
 model MerchantSettings {
-  id                     String   @id @default(cuid())
-  merchantId             String   @unique
-  emailNotifications     Boolean  @default(true)
-  lowStockAlerts         Boolean  @default(true)
-  invoiceCreatedNotify   Boolean  @default(true)
-  campaignNotify         Boolean  @default(true)
-  autoCloudBackup        Boolean  @default(true)
-  updatedAt              DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  merchantId           String   @unique
+  emailNotifications   Boolean  @default(true)
+  lowStockAlerts       Boolean  @default(true)
+  invoiceCreatedNotify Boolean  @default(true)
+  campaignNotify       Boolean  @default(true)
+  autoCloudBackup      Boolean  @default(true)
+  updatedAt            DateTime @updatedAt
 
   merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 }
 
 model ActiveSession {
-  id          String   @id @default(cuid())
-  merchantId  String
-  sessionToken String  @unique
-  deviceInfo  String
-  ipAddress   String
-  lastActive  DateTime @default(now())
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  merchantId   String
+  sessionToken String   @unique
+  deviceInfo   String
+  ipAddress    String
+  lastActive   DateTime @default(now())
+  createdAt    DateTime @default(now())
 
   merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
@@ -149,20 +166,20 @@ model AuditLog {
 }
 
 model Customer {
-  id         String   @id @default(cuid())
-  merchantId String
-  name       String
-  mobile     String
-  whatsapp   String?
-  email      String?
-  address    String?
-  city       String?
-  dob        String?
+  id          String   @id @default(cuid())
+  merchantId  String
+  name        String
+  mobile      String
+  whatsapp    String?
+  email       String?
+  address     String?
+  city        String?
+  dob         String?
   anniversary String?
-  gstin      String?
-  isVip      Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  gstin       String?
+  isVip       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
@@ -284,20 +301,6 @@ model AiHistory {
   @@index([merchantId])
 }
 
-enum PaymentStatus {
-  PENDING
-  SUCCESS
-  FAILED
-  REFUNDED
-}
-
-enum GatewayType {
-  UPI_INTENT
-  RAZORPAY
-  CASHFREE
-  PHONEPE
-}
-
 model PaymentGatewayConfig {
   id                  String   @id @default(cuid())
   merchantId          String   @unique
@@ -307,7 +310,7 @@ model PaymentGatewayConfig {
   cashfreeSecretKey   String?
   phonepeClientId     String?
   phonepeClientSecret String?
-  merchantVpa         String?  // UPI ID for direct intent
+  merchantVpa         String?
   updatedAt           DateTime @updatedAt
 
   merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
@@ -319,7 +322,7 @@ model Payment {
   orderId        String        @unique
   gateway        GatewayType
   gatewayOrderId String?
-  transactionId  String?       // Real UTR / Bank Ref
+  transactionId  String?
   amount         Float
   currency       String        @default("INR")
   status         PaymentStatus @default(PENDING)
@@ -340,14 +343,14 @@ model Payment {
 }
 
 model Refund {
-  id               String   @id @default(cuid())
-  merchantId       String
-  paymentId        String
-  gatewayRefundId  String   @unique
-  amount           Float
-  reason           String?
-  status           String   @default("PROCESSED")
-  createdAt        DateTime @default(now())
+  id              String   @id @default(cuid())
+  merchantId      String
+  paymentId       String
+  gatewayRefundId String   @unique
+  amount          Float
+  reason          String?
+  status          String   @default("PROCESSED")
+  createdAt       DateTime @default(now())
 
   merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   payment  Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
