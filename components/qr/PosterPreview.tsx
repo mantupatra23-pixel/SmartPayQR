@@ -53,15 +53,16 @@ const THEME_STYLES: Record<PosterTheme, { container: string; text: string; badge
 export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef }) => {
   const currentTheme = THEME_STYLES[data.theme || 'classic-emerald'];
 
-  const upiIntent = `upi://pay?pa=${encodeURIComponent(data.upiId || "")}&pn=${encodeURIComponent(data.name || "")}${
-    data.amount ? `&am=${data.amount}` : ""
-  }${data.note ? `&tn=${encodeURIComponent(data.note)}` : ""}`;
+  const upiIntent = data.upiId 
+    ? `upi://pay?pa=${encodeURIComponent(data.upiId)}&pn=${encodeURIComponent(data.name || "")}${
+        data.amount ? `&am=${data.amount}` : ""
+      }${data.note ? `&tn=${encodeURIComponent(data.note)}` : ""}`
+    : "";
 
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
       className="flex justify-center w-full my-2"
     >
       <div
@@ -79,18 +80,16 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
             Verified NPCI Merchant
           </div>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight uppercase text-white truncate px-2">
-            {data.name || "YOUR SHOP NAME"}
+            {data.name.trim() ? data.name : "YOUR SHOP NAME"}
           </h2>
-          {data.address && (
-            <p className={`text-xs font-medium truncate px-4 ${currentTheme.text}`}>
-              {data.address}
-            </p>
-          )}
+          <p className={`text-xs font-medium truncate px-4 ${currentTheme.text}`}>
+            {data.address.trim() ? data.address : "Enter shop address or tagline above"}
+          </p>
         </div>
 
         {/* QR Core Container */}
         <div className="w-full bg-white p-5 rounded-2xl shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center z-10 my-4">
-          {data.upiId ? (
+          {data.upiId.trim() ? (
             <QRCodeSVG
               value={upiIntent}
               size={190}
@@ -103,7 +102,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
           ) : (
             <div className="w-[190px] h-[190px] flex flex-col items-center justify-center text-slate-400 text-xs text-center border-2 border-dashed border-slate-200 rounded-xl p-4 bg-slate-50">
               <ShieldCheck className="w-8 h-8 text-slate-300 mb-2" />
-              Enter UPI ID to preview poster
+              Enter UPI ID in form to generate live QR
             </div>
           )}
           <p className="text-[11px] font-bold text-slate-600 tracking-widest uppercase mt-3">
@@ -114,7 +113,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
         {/* Payment VPA Box */}
         <div className="w-full text-center space-y-1.5 z-10">
           <div className="bg-white/10 backdrop-blur-md py-2 px-4 rounded-xl text-sm font-bold tracking-wide font-mono text-white border border-white/10 truncate">
-            {data.upiId || "merchant@upi"}
+            {data.upiId.trim() ? data.upiId : "yourname@upi"}
           </div>
 
           {data.mobile && (
