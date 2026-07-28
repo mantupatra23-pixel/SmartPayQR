@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -19,7 +18,7 @@ export default function Home() {
     amount: ""
   });
 
-  const posterRef = useRef<HTMLDivElement>(null);
+  const posterRef = useRef<HTMLDivElement>(null!);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

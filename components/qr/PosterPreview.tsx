@@ -1,4 +1,3 @@
-// components/qr/PosterPreview.tsx
 "use client";
 
 import React from "react";
@@ -7,7 +6,7 @@ import { NamePayData } from "@/types/qr";
 
 interface PosterPreviewProps {
   data: NamePayData;
-  posterRef: React.RefObject<HTMLDivElement | null>;
+  posterRef: React.RefObject<HTMLDivElement>;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef }) => {

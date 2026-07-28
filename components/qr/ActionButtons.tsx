@@ -1,13 +1,12 @@
-// components/qr/ActionButtons.tsx
 "use client";
 
 import React from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Download, Printer, Copy, Share2, FileText } from "lucide-react";
+import { Download, Printer, Copy, FileText } from "lucide-react";
 
 interface ActionButtonsProps {
-  posterRef: React.RefObject<HTMLDivElement | null>;
+  posterRef: React.RefObject<HTMLDivElement>;
   upiId: string;
 }
 
