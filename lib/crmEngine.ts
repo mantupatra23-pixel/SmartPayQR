@@ -122,7 +122,7 @@ export const getCRMAnalytics = () => {
   // Total Sales & Average Purchase
   const totalPurchasesCount = customers.reduce((sum, c) => sum + c.purchases.length, 0);
   const totalRevenueFromPurchases = customers.reduce((sum, c) => {
-    return sum + c.purchases.reduce((pSum, p) => p + p.amount, 0);
+    return sum + c.purchases.reduce((pSum, p) => pSum + p.amount, 0);
   }, 0);
 
   const averagePurchase = totalPurchasesCount > 0 
@@ -148,7 +148,7 @@ export const getTodayOccasions = () => {
 
   const birthdays = customers.filter(c => {
     if (!c.dob) return false;
-    const parts = c.dob.split("-"); // YYYY-MM-DD or MM-DD
+    const parts = c.dob.split("-");
     if (parts.length === 3) return `${parts[1]}-${parts[2]}` === currentMonthDay;
     return false;
   });
