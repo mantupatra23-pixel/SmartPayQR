@@ -3,7 +3,7 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { NamePayData, PosterTheme } from "@/types/qr";
-import { ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface PosterPreviewProps {
@@ -72,9 +72,8 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
       <div
         id="printable-poster"
         ref={posterRef}
-        className={`w-full max-w-[380px] sm:max-w-[400px] bg-gradient-to-b ${currentTheme.container} text-white rounded-3xl p-6 sm:p-7 shadow-2xl border flex flex-col items-center justify-between min-h-[560px] relative overflow-hidden`}
+        className={`w-full max-w-[380px] sm:max-w-[400px] bg-gradient-to-b ${currentTheme.container} text-white rounded-3xl p-6 sm:p-7 shadow-2xl border flex flex-col items-center justify-between min-h-[580px] relative overflow-hidden`}
       >
-        {/* Glow Effects */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* Business Header */}
@@ -92,7 +91,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
         </div>
 
         {/* QR Core Container */}
-        <div className="w-full bg-white p-5 rounded-2xl shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center z-10 my-4">
+        <div className="w-full bg-white p-5 rounded-2xl shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center z-10 my-3">
           {upiIdStr.trim() ? (
             <QRCodeSVG
               value={upiIntent}
@@ -114,8 +113,8 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
           </p>
         </div>
 
-        {/* Payment VPA Box */}
-        <div className="w-full text-center space-y-1.5 z-10">
+        {/* VPA Box */}
+        <div className="w-full text-center space-y-1 z-10">
           <div className="bg-white/10 backdrop-blur-md py-2 px-4 rounded-xl text-sm font-bold tracking-wide font-mono text-white border border-white/10 truncate">
             {upiIdStr.trim() ? upiIdStr : "yourname@upi"}
           </div>
@@ -125,25 +124,23 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
               Ph: +91 {data.mobile}
             </p>
           )}
-
-          {data.amount && (
-            <div className="inline-block bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-lg border border-amber-400/30">
-              Fixed Amount: ₹{data.amount}
-            </div>
-          )}
         </div>
 
-        {/* Supported UPI Partners */}
-        <div className="w-full pt-4 border-t border-white/10 text-center z-10 mt-2">
-          <p className="text-[10px] text-white/60 uppercase font-semibold tracking-widest mb-2">
-            Accepted Payments
-          </p>
-          <div className="flex justify-center items-center gap-2 text-[11px] font-extrabold text-slate-900">
-            <span className="bg-white px-2.5 py-1 rounded-md shadow-sm">GPay</span>
-            <span className="bg-white px-2.5 py-1 rounded-md shadow-sm">PhonePe</span>
-            <span className="bg-white px-2.5 py-1 rounded-md shadow-sm">Paytm</span>
-            <span className="bg-white px-2.5 py-1 rounded-md shadow-sm">BHIM</span>
+        {/* Supported UPI Logos */}
+        <div className="w-full pt-3 border-t border-white/10 text-center z-10">
+          <div className="flex justify-center items-center gap-2 text-[10px] font-extrabold text-slate-900">
+            <span className="bg-white px-2 py-0.5 rounded shadow-sm">GPay</span>
+            <span className="bg-white px-2 py-0.5 rounded shadow-sm">PhonePe</span>
+            <span className="bg-white px-2 py-0.5 rounded shadow-sm">Paytm</span>
+            <span className="bg-white px-2 py-0.5 rounded shadow-sm">BHIM</span>
           </div>
+        </div>
+
+        {/* VIRAL WATERMARK FOOTER (Drives 50L+ Monthly Visitors) */}
+        <div className="w-full pt-2 text-center border-t border-white/10 z-10 mt-2">
+          <p className="text-[10px] font-bold text-emerald-300/90 tracking-wide flex items-center justify-center gap-1">
+            <Sparkles className="w-3 h-3 text-amber-300" /> Free QR & Billing at <span className="underline font-black text-white">SmartPayQR.in</span>
+          </p>
         </div>
       </div>
     </motion.div>
