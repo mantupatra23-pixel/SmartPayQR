@@ -1,21 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
-import { Settings, Save, Store, ShieldCheck, User, Phone, MapPin } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Settings, Save } from "lucide-react";
 
 export const MerchantSettings: React.FC = () => {
   const [profile, setProfile] = useState({
-    businessName: "Mantu Patra General Store",
-    ownerName: "Mantu Patra",
-    phone: "9178065739",
-    gstin: "21ABCDE1234F1Z5",
-    address: "At-Bartini, Po-Sodaka, Ps-Polasara, Ganjam, Odisha",
-    upiId: "9178065739@ibl"
+    businessName: "",
+    ownerName: "",
+    phone: "",
+    gstin: "",
+    address: "",
+    upiId: ""
   });
 
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
+  // Load profile from localStorage on component mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("merchant_business_profile");
+    if (savedProfile) {
+      try {
+        setProfile(JSON.parse(savedProfile));
+      } catch (err) {
+        console.error("Failed to parse saved profile", err);
+      }
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfile({ ...profile, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem("merchant_business_profile", JSON.stringify(profile));
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -34,55 +52,65 @@ export const MerchantSettings: React.FC = () => {
         </div>
       </div>
 
-      <div className="space-y-4 text-xs font-semibold">
+      <form onSubmit={handleSave} className="space-y-4 text-xs font-semibold">
         <div>
           <label className="text-slate-700 block mb-1 font-bold">Business Name</label>
           <input
             type="text"
+            name="businessName"
+            placeholder="e.g. My General Store"
             value={profile.businessName}
-            onChange={(e) => setProfile({ ...profile, businessName: e.target.value })}
-            className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-bold"
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-slate-700 block mb-1 font-bold">Owner Name</label>
             <input
               type="text"
+              name="ownerName"
+              placeholder="e.g. Rahul Sharma"
               value={profile.ownerName}
-              onChange={(e) => setProfile({ ...profile, ownerName: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-bold"
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
           <div>
             <label className="text-slate-700 block mb-1 font-bold">Phone Number</label>
             <input
               type="text"
+              name="phone"
+              placeholder="e.g. 9876543210"
               value={profile.phone}
-              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-bold"
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-slate-700 block mb-1 font-bold">GSTIN Number</label>
             <input
               type="text"
+              name="gstin"
+              placeholder="e.g. 22AAAAA0000A1Z5"
               value={profile.gstin}
-              onChange={(e) => setProfile({ ...profile, gstin: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-bold"
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
           <div>
             <label className="text-slate-700 block mb-1 font-bold">Primary UPI ID</label>
             <input
               type="text"
+              name="upiId"
+              placeholder="e.g. myshop@upi"
               value={profile.upiId}
-              onChange={(e) => setProfile({ ...profile, upiId: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-bold"
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
         </div>
@@ -91,19 +119,21 @@ export const MerchantSettings: React.FC = () => {
           <label className="text-slate-700 block mb-1 font-bold">Shop Address</label>
           <input
             type="text"
+            name="address"
+            placeholder="e.g. Main Market Road, City, State"
             value={profile.address}
-            onChange={(e) => setProfile({ ...profile, address: e.target.value })}
-            className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-bold"
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-slate-50 border rounded-xl font-medium outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
 
         <button
-          onClick={handleSave}
-          className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md"
+          type="submit"
+          className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md"
         >
-          <Save className="w-4 h-4" /> {saved ? "Profile Saved!" : "Save Settings"}
+          <Save className="w-4 h-4" /> {saved ? "Settings Saved!" : "Save Settings"}
         </button>
-      </div>
+      </form>
     </div>
   );
 };
