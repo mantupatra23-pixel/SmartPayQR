@@ -50,6 +50,19 @@ enum GatewayType {
   PHONEPE
 }
 
+enum BackupFormat {
+  JSON
+  CSV
+  EXCEL
+  ZIP
+}
+
+enum BackupStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
 model SuperAdmin {
   id        String    @id @default(cuid())
   email     String    @unique
@@ -58,6 +71,41 @@ model SuperAdmin {
   role      AdminRole @default(SUPER_ADMIN)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  adminEmail String
+  action     String
+  target     String?
+  ipAddress  String?
+  details    String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([adminEmail])
+}
+
+model SystemSettings {
+  id                  String   @id @default(cuid())
+  siteName            String   @default("SmartPay AI OS")
+  logoUrl             String?
+  brandColor          String   @default("#059669")
+  maintenanceMode     Boolean  @default(false)
+  smtpHost            String?
+  smtpPort            Int?
+  smtpUser            String?
+  smtpPassword        String?
+  groqTokenLimitDaily Int      @default(100000)
+  updatedAt           DateTime @updatedAt
+}
+
+model SystemBroadcast {
+  id        String   @id @default(cuid())
+  title     String
+  message   String   @db.Text
+  type      String   @default("INFO")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
 }
 
 model Merchant {
@@ -76,7 +124,7 @@ model Merchant {
   resetToken       String?
   resetTokenExpiry DateTime?
 
-  // Profile & Business Config
+  // Profile & Config
   profileImage    String?
   logoUrl         String?
   upiId           String?
@@ -104,6 +152,7 @@ model Merchant {
   gatewayConfig   PaymentGatewayConfig?
   payments        Payment[]
   refunds         Refund[]
+  backups         MerchantBackup[]
 
   @@index([email])
   @@index([mobile])
@@ -354,6 +403,23 @@ model Refund {
 
   merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   payment  Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId])
+}
+
+model MerchantBackup {
+  id          String       @id @default(cuid())
+  merchantId  String
+  filename    String
+  format      BackupFormat @default(JSON)
+  sizeInBytes Int
+  version     String       @default("1.0.0")
+  status      BackupStatus @default(COMPLETED)
+  note        String?
+  backupData  String       @db.Text
+  createdAt   DateTime     @default(now())
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
   @@index([merchantId])
 }
