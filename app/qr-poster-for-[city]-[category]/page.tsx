@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { INDIAN_CITIES, BUSINESS_CATEGORIES } from "@/config/seoKeywords";
-import { QrCode, Sparkles, ShieldCheck, ArrowRight, Store } from "lucide-react";
+import { ShieldCheck, ArrowRight, Sparkles } from "lucide-react";
 
 export async function generateStaticParams() {
   const params: { city: string; category: string }[] = [];
@@ -18,9 +18,17 @@ export async function generateStaticParams() {
   return params;
 }
 
-export default function ProgrammaticSEOPage({ params }: { params: { city: string; category: string } }) {
-  const formattedCity = params.city.charAt(0).toUpperCase() + params.city.slice(1);
-  const categoryObj = BUSINESS_CATEGORIES.find(c => c.slug === params.category) || { name: "Small Business" };
+export default async function ProgrammaticSEOPage({ 
+  params 
+}: { 
+  params: Promise<{ city: string; category: string }> | { city: string; category: string } 
+}) {
+  const resolvedParams = await params;
+  const rawCity = resolvedParams?.city || "india";
+  const rawCategory = resolvedParams?.category || "general-store";
+
+  const formattedCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+  const categoryObj = BUSINESS_CATEGORIES.find(c => c.slug === rawCategory) || { name: "Small Business" };
 
   const pageTitle = `Free UPI Payment QR Poster Generator for ${categoryObj.name} in ${formattedCity}`;
   const metaDesc = `Create NPCI compliant UPI Payment QR posters and GST Invoices instantly for your ${categoryObj.name} in ${formattedCity}. 100% Free SmartPay AI OS.`;
