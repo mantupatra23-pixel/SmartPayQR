@@ -3,7 +3,7 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { NamePayData, PosterTheme } from "@/types/qr";
-import { ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface PosterPreviewProps {
@@ -53,8 +53,12 @@ const THEME_STYLES: Record<PosterTheme, { container: string; text: string; badge
 export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef }) => {
   const currentTheme = THEME_STYLES[data.theme || 'classic-emerald'];
 
-  const upiIntent = data.upiId 
-    ? `upi://pay?pa=${encodeURIComponent(data.upiId)}&pn=${encodeURIComponent(data.name || "")}${
+  const upiIdStr = data.upiId || "";
+  const nameStr = data.name || "";
+  const addressStr = data.address || "";
+
+  const upiIntent = upiIdStr.trim() 
+    ? `upi://pay?pa=${encodeURIComponent(upiIdStr)}&pn=${encodeURIComponent(nameStr)}${
         data.amount ? `&am=${data.amount}` : ""
       }${data.note ? `&tn=${encodeURIComponent(data.note)}` : ""}`
     : "";
@@ -80,16 +84,16 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
             Verified NPCI Merchant
           </div>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight uppercase text-white truncate px-2">
-            {data.name.trim() ? data.name : "YOUR SHOP NAME"}
+            {nameStr.trim() ? nameStr : "YOUR SHOP NAME"}
           </h2>
           <p className={`text-xs font-medium truncate px-4 ${currentTheme.text}`}>
-            {data.address.trim() ? data.address : "Enter shop address or tagline above"}
+            {addressStr.trim() ? addressStr : "Enter shop address or tagline above"}
           </p>
         </div>
 
         {/* QR Core Container */}
         <div className="w-full bg-white p-5 rounded-2xl shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center z-10 my-4">
-          {data.upiId.trim() ? (
+          {upiIdStr.trim() ? (
             <QRCodeSVG
               value={upiIntent}
               size={190}
@@ -113,7 +117,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({ data, posterRef })
         {/* Payment VPA Box */}
         <div className="w-full text-center space-y-1.5 z-10">
           <div className="bg-white/10 backdrop-blur-md py-2 px-4 rounded-xl text-sm font-bold tracking-wide font-mono text-white border border-white/10 truncate">
-            {data.upiId.trim() ? data.upiId : "yourname@upi"}
+            {upiIdStr.trim() ? upiIdStr : "yourname@upi"}
           </div>
 
           {data.mobile && (
