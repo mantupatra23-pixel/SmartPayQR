@@ -5,19 +5,23 @@ import { PosterPreview } from "@/components/qr/PosterPreview";
 import { ActionButtons } from "@/components/qr/ActionButtons";
 import { InvoiceStudio } from "@/components/invoice/InvoiceStudio";
 import { AIAssistant } from "@/components/ai/AIAssistant";
+import { AIPosterGenerator } from "@/components/generator/AIPosterGenerator";
 import { FinancialMarketplace } from "@/components/marketplace/FinancialMarketplace";
 import { MerchantToolbox } from "@/components/toolbox/MerchantToolbox";
+import { QRAnalytics } from "@/components/analytics/QRAnalytics";
+import { CustomerManagement } from "@/components/customers/CustomerManagement";
+import { MerchantSettings } from "@/components/settings/MerchantSettings";
 import { FloatingCopilot } from "@/components/ai/FloatingCopilot";
 import { NamePayData } from "@/types/qr";
-import { ViewMode } from "@/types/suite";
+import { NavigationTab } from "@/types/suite";
 import { 
-  QrCode, Sparkles, ShieldCheck, Receipt, Wand2, 
-  LayoutDashboard, Calculator
+  QrCode, Sparkles, ShieldCheck, Receipt, Wand2, Image as ImageIcon,
+  LayoutDashboard, Calculator, BarChart3, Users, Settings, Bot
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<ViewMode>('qr-studio');
+  const [activeTab, setActiveTab] = useState<NavigationTab>('poster-studio');
   const [formData, setFormData] = useState<NamePayData>({
     name: "Mantu Patra General Store",
     upiId: "9178065739@ibl",
@@ -34,9 +38,22 @@ export default function Home() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const navItems: { id: NavigationTab; label: string; icon: React.ReactNode }[] = [
+    { id: 'poster-studio', label: 'Poster Studio', icon: <QrCode className="w-4 h-4" /> },
+    { id: 'invoice-writer', label: 'AI Invoice', icon: <Receipt className="w-4 h-4" /> },
+    { id: 'marketing-hub', label: 'Marketing Hub', icon: <Wand2 className="w-4 h-4" /> },
+    { id: 'poster-generator', label: 'Poster Designer', icon: <ImageIcon className="w-4 h-4" /> },
+    { id: 'business-assistant', label: 'AI Copilot', icon: <Bot className="w-4 h-4" /> },
+    { id: 'merchant-toolbox', label: 'Toolbox', icon: <Calculator className="w-4 h-4" /> },
+    { id: 'qr-analytics', label: 'Analytics', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'customer-management', label: 'Customers', icon: <Users className="w-4 h-4" /> },
+    { id: 'marketplace', label: 'Marketplace', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
-      {/* Top Suite Header */}
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans pb-20 md:pb-8">
+      {/* Top Header */}
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -47,63 +64,37 @@ export default function Home() {
               <h1 className="font-extrabold text-xl text-slate-900 tracking-tight leading-none">
                 SmartPay <span className="text-emerald-600">AI OS</span>
               </h1>
-              <p className="text-[10px] text-slate-500 font-medium">Merchant Operating System</p>
+              <p className="text-[10px] text-slate-500 font-medium">India's Merchant Operating System</p>
             </div>
-          </div>
-
-          {/* Navigation Bar */}
-          <div className="hidden lg:flex items-center bg-slate-100 p-1 rounded-2xl border">
-            <button
-              onClick={() => setActiveTab('qr-studio')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                activeTab === 'qr-studio' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-              }`}
-            >
-              <QrCode className="w-3.5 h-3.5" /> QR Poster
-            </button>
-            <button
-              onClick={() => setActiveTab('invoice-studio')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                activeTab === 'invoice-studio' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-              }`}
-            >
-              <Receipt className="w-3.5 h-3.5" /> GST Invoice
-            </button>
-            <button
-              onClick={() => setActiveTab('marketing-hub')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                activeTab === 'marketing-hub' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-              }`}
-            >
-              <Wand2 className="w-3.5 h-3.5" /> AI Engine
-            </button>
-            <button
-              onClick={() => setActiveTab('merchant-toolbox')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                activeTab === 'merchant-toolbox' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-              }`}
-            >
-              <Calculator className="w-3.5 h-3.5" /> Calculators
-            </button>
-            <button
-              onClick={() => setActiveTab('marketplace')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                activeTab === 'marketplace' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-              }`}
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" /> Marketplace
-            </button>
           </div>
 
           <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
             <ShieldCheck className="w-4 h-4 text-emerald-600" /> NPCI Compliant
           </span>
         </div>
+
+        {/* Desktop Top Navigation Bar */}
+        <div className="hidden lg:flex items-center justify-center border-t border-slate-100 bg-slate-50/80 px-4 py-2 overflow-x-auto gap-1">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                activeTab === item.id 
+                  ? 'bg-slate-900 text-white shadow-md' 
+                  : 'text-slate-600 hover:bg-slate-200/60'
+              }`}
+            >
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </div>
       </header>
 
-      {/* Main Suite Content */}
+      {/* Main Suite Module Renderer */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
-        {activeTab === 'qr-studio' && (
+        {activeTab === 'poster-studio' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
               <div className="flex justify-between items-center border-b pb-4">
@@ -195,19 +186,35 @@ export default function Home() {
           </div>
         )}
 
-        {activeTab === 'invoice-studio' && <InvoiceStudio />}
+        {activeTab === 'invoice-writer' && <InvoiceStudio />}
         {activeTab === 'marketing-hub' && <AIAssistant />}
+        {activeTab === 'poster-generator' && <AIPosterGenerator />}
+        {activeTab === 'business-assistant' && <AIAssistant />}
         {activeTab === 'merchant-toolbox' && <MerchantToolbox />}
+        {activeTab === 'qr-analytics' && <QRAnalytics />}
+        {activeTab === 'customer-management' && <CustomerManagement />}
         {activeTab === 'marketplace' && <FinancialMarketplace />}
+        {activeTab === 'settings' && <MerchantSettings />}
       </main>
 
-      {/* Floating AI Copilot */}
+      {/* Floating AI Copilot Assistant */}
       <FloatingCopilot />
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white/60 py-6 text-center text-xs text-slate-500 mt-12">
-        <p>© 2026 SmartPay AI OS. Client-Side NPCI Compliant Operating Suite.</p>
-      </footer>
+      {/* Mobile Bottom Navigation Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2 px-3 z-50 flex items-center justify-around overflow-x-auto">
+        {navItems.slice(0, 5).map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setActiveTab(item.id)}
+            className={`flex flex-col items-center gap-1 p-1 rounded-xl transition min-w-[56px] ${
+              activeTab === item.id ? 'text-emerald-600 font-bold' : 'text-slate-500'
+            }`}
+          >
+            {item.icon}
+            <span className="text-[10px] truncate">{item.label.split(' ')[0]}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

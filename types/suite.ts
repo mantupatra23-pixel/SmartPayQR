@@ -1,11 +1,14 @@
-export type ViewMode = 
-  | 'qr-studio' 
-  | 'invoice-studio' 
-  | 'marketing-hub' 
-  | 'business-assistant' 
-  | 'merchant-toolbox' 
-  | 'customer-management' 
-  | 'marketplace';
+export type NavigationTab = 
+  | 'poster-studio'
+  | 'invoice-writer'
+  | 'marketing-hub'
+  | 'poster-generator'
+  | 'business-assistant'
+  | 'merchant-toolbox'
+  | 'qr-analytics'
+  | 'customer-management'
+  | 'marketplace'
+  | 'settings';
 
 export type Language = 'English' | 'Hindi' | 'Odia' | 'Bengali';
 
@@ -41,11 +44,4 @@ export interface InvoiceDocument {
   shipping: number;
   notes: string;
   paid: boolean;
-}
-
-export interface AnalyticsData {
-  qrDownloads: number;
-  posterDownloads: number;
-  invoicesCreated: number;
-  totalRevenue: number;
 }
