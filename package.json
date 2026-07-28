@@ -12,10 +12,13 @@
     "next": "^14.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "framer-motion": "^11.0.0",
     "lucide-react": "^0.378.0",
     "qrcode.react": "^3.1.0",
     "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1"
+    "jspdf": "^2.5.1",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",
