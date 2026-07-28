@@ -3,14 +3,15 @@
 import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Download, Printer, Copy, FileText, Check } from "lucide-react";
+import { Download, Printer, Copy, FileText, Share2, Check } from "lucide-react";
 
 interface ActionButtonsProps {
   posterRef: React.RefObject<HTMLDivElement>;
   upiId: string;
+  name: string;
 }
 
-export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId }) => {
+export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId, name }) => {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +23,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId }
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = image;
-      link.download = `SmartPayQR-${Date.now()}.png`;
+      link.download = `${name || 'SmartPay'}-QR-Poster.png`;
       link.click();
     } finally {
       setLoading(false);
@@ -37,13 +38,17 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId }
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       
       pdf.addImage(imgData, "PNG", (pdfWidth - 140) / 2, 20, 140, (canvas.height * 140) / canvas.width);
-      pdf.save(`SmartPayQR-Poster-${Date.now()}.pdf`);
+      pdf.save(`${name || 'SmartPay'}-QR-Poster.pdf`);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = `Pay ${name} instantly via UPI:\nUPI ID: ${upiId}\n\nGenerated via SmartPay QR Studio`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const handlePrint = () => {
@@ -64,7 +69,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId }
         disabled={loading}
         className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-emerald-600/20 text-xs sm:text-sm"
       >
-        <Download className="w-4 h-4" /> Download PNG
+        <Download className="w-4 h-4" /> Download Ultra HD
       </button>
 
       <button
@@ -76,6 +81,13 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId }
       </button>
 
       <button
+        onClick={handleShareWhatsApp}
+        className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md text-xs sm:text-sm"
+      >
+        <Share2 className="w-4 h-4" /> Share WhatsApp
+      </button>
+
+      <button
         onClick={handlePrint}
         className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md text-xs sm:text-sm"
       >
@@ -84,10 +96,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ posterRef, upiId }
 
       <button
         onClick={handleCopyUPI}
-        className="flex items-center justify-center gap-2 bg-white hover:bg-slate-100 active:scale-95 text-slate-800 font-semibold py-3 px-4 rounded-xl transition border border-slate-300 shadow-sm text-xs sm:text-sm"
+        className="col-span-2 flex items-center justify-center gap-2 bg-white hover:bg-slate-100 active:scale-95 text-slate-800 font-semibold py-3 px-4 rounded-xl transition border border-slate-300 shadow-sm text-xs sm:text-sm"
       >
         {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-        {copied ? "Copied!" : "Copy UPI ID"}
+        {copied ? "UPI ID Copied to Clipboard!" : "Copy VPA / UPI ID"}
       </button>
     </div>
   );

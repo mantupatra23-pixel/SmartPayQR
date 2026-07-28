@@ -1,45 +1,69 @@
-// config/affiliates.ts
 export const AFFILIATES = {
-  amazon: "https://amazon.in",
-  flipkart: "https://flipkart.com",
-  earnkaro: "https://earnkaro.com",
-  razorpay: "https://partner.razorpay.com",
-  bank: "https://bankkaro.com",
-  hosting: "https://vercel.com",
-  domain: "https://namecheap.com"
+  creditCard: "https://bankkaro.com",
+  currentAccount: "https://earnkaro.com",
+  posMachine: "https://earnkaro.com",
+  soundbox: "https://earnkaro.com",
+  thermalPrinter: "https://amazon.in",
+  barcodeScanner: "https://amazon.in",
+  gstRegistration: "https://earnkaro.com",
+  accountingSoftware: "https://earnkaro.com",
+  businessLoan: "https://bankkaro.com",
+  insurance: "https://bankkaro.com"
 };
 
 export const MONETIZATION_CARDS = [
   {
     id: "credit-card",
-    title: "Apply Business Credit Card",
-    description: "Get up to ₹1,920 cashback & zero join fee on shop purchases.",
-    buttonText: "Apply Now",
+    title: "Business Credit Card",
+    description: "Get up to ₹2,000 cashback on shop inventory purchases with zero joining fee.",
+    buttonText: "Apply Online",
     category: "Finance",
-    url: AFFILIATES.bank
+    badge: "Instant Approval",
+    url: AFFILIATES.creditCard
   },
   {
-    id: "pos-machine",
-    title: "Need Soundbox / POS Machine?",
-    description: "Instant payment audio alerts for your shop counter.",
-    buttonText: "Order Machine",
+    id: "soundbox",
+    title: "Paytm / PhonePe Soundbox",
+    description: "Instant voice notification in Hindi & English for every payment received.",
+    buttonText: "Order Device",
     category: "Hardware",
-    url: AFFILIATES.earnkaro
+    badge: "Free Delivery",
+    url: AFFILIATES.soundbox
   },
   {
     id: "thermal-printer",
-    title: "Buy Thermal Receipt Printer",
-    description: "Connect via Bluetooth/USB for instant billing printing.",
+    title: "Bluetooth Receipt Printer",
+    description: "58mm wireless printer for instant billing and payment receipts.",
     buttonText: "Check Price",
     category: "Store Essentials",
-    url: AFFILIATES.amazon
+    badge: "Top Seller",
+    url: AFFILIATES.thermalPrinter
   },
   {
     id: "current-account",
-    title: "Open Zero Balance Current Account",
-    description: "Instant activation with free debit card and high UPI limits.",
+    title: "Zero Balance Current Account",
+    description: "Instant digital activation with high daily UPI collection limits.",
     buttonText: "Open Account",
     category: "Banking",
-    url: AFFILIATES.bank
+    badge: "100% Free",
+    url: AFFILIATES.currentAccount
+  },
+  {
+    id: "business-loan",
+    title: "Merchant Collateral-Free Loan",
+    description: "Get up to ₹5,00,000 daily-settlement loan for shop expansion.",
+    buttonText: "Check Eligibility",
+    category: "Loan",
+    badge: "Low Interest",
+    url: AFFILIATES.businessLoan
+  },
+  {
+    id: "gst-software",
+    title: "GST Billing & Accounting App",
+    description: "Manage inventory, sales ledger, and GST filing directly from mobile.",
+    buttonText: "Try Free",
+    category: "Software",
+    badge: "Recommended",
+    url: AFFILIATES.accountingSoftware
   }
 ];
