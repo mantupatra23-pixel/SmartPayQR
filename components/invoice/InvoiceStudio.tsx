@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { InvoiceDocument, InvoiceItem } from "@/types/suite";
-import { Plus, Trash2, Printer, Download, Receipt, FileCheck } from "lucide-react";
+import { Plus, Trash2, Printer, Download, Receipt } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -17,6 +17,7 @@ export const InvoiceStudio: React.FC = () => {
     items: [{ id: "1", description: "Standard Business Service / Goods", quantity: 1, rate: 500, amount: 500 }],
     gstRate: 18,
     discount: 0,
+    shipping: 0,
     notes: "Thank you for doing business with us!",
     paid: true
   });
@@ -53,7 +54,7 @@ export const InvoiceStudio: React.FC = () => {
 
   const subtotal = invoice.items.reduce((sum, i) => sum + i.amount, 0);
   const gstAmount = (subtotal * (invoice.type === 'gst' ? invoice.gstRate : 0)) / 100;
-  const grandTotal = Math.max(0, subtotal + gstAmount - invoice.discount);
+  const grandTotal = Math.max(0, subtotal + gstAmount + (invoice.shipping || 0) - (invoice.discount || 0));
 
   const handleDownloadPDF = async () => {
     if (!invoiceRef.current) return;
@@ -143,7 +144,7 @@ export const InvoiceStudio: React.FC = () => {
             </button>
           </div>
 
-          {invoice.items.map((item, idx) => (
+          {invoice.items.map((item) => (
             <div key={item.id} className="grid grid-cols-12 gap-2 items-center bg-slate-50 p-2.5 rounded-xl border">
               <input
                 type="text"
