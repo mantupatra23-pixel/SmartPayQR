@@ -8,7 +8,7 @@ import {
   Home, CreditCard, FileText, Package, Users, Bot, Megaphone, 
   BarChart3, ShoppingBag, Store, Calculator, Cloud, Settings, 
   User, HelpCircle, LogOut, ChevronLeft, ChevronRight, Menu, X, 
-  Search, ShieldCheck, Sparkles, Bell
+  Search, ShieldCheck, Bell
 } from "lucide-react";
 
 interface SidebarLayoutProps {
@@ -35,7 +35,7 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       title: "PAYMENTS & BILLING",
       items: [
         { label: "Payments & UPI", href: "/payments", icon: CreditCard },
-        { label: "GST Billing", href: "/billing", icon: FileText },
+        { label: "GST Billing", href: "/gst-billing", icon: FileText },
       ]
     },
     {
@@ -57,9 +57,9 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       items: [
         { label: "Analytics", href: "/analytics", icon: BarChart3 },
         { label: "Marketplace & Loans", href: "/marketplace", icon: ShoppingBag },
-        { label: "Online Store", href: "/store", icon: Store },
+        { label: "Online Store", href: "/online-store", icon: Store },
         { label: "Calculators", href: "/calculators", icon: Calculator },
-        { label: "Cloud Backup", href: "/backup", icon: Cloud },
+        { label: "Cloud Backup", href: "/cloud-backup", icon: Cloud },
       ]
     },
     {
