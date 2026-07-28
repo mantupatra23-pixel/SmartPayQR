@@ -2,8 +2,7 @@
 
 import React from "react";
 import { 
-  QrCode, Receipt, Wand2, Calculator, TrendingUp, 
-  Users, ArrowUpRight, ShieldCheck, Zap, Sparkles 
+  QrCode, Receipt, Wand2, Calculator, Users, ArrowUpRight, Zap, Sparkles 
 } from "lucide-react";
 import { NavigationTab } from "@/types/suite";
 
@@ -28,7 +27,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({ setActiveTab }) =>
           </p>
         </div>
         <button
-          onClick={() => setActiveTab('poster-studio')}
+          onClick={() => setActiveTab('payments')}
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs shadow-lg transition active:scale-95 shrink-0"
         >
           <QrCode className="w-4 h-4" /> Open Poster Studio
@@ -79,7 +78,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({ setActiveTab }) =>
         <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div 
-            onClick={() => setActiveTab('poster-studio')}
+            onClick={() => setActiveTab('payments')}
             className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-between group"
           >
             <div className="flex items-center gap-3">
@@ -95,7 +94,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({ setActiveTab }) =>
           </div>
 
           <div 
-            onClick={() => setActiveTab('invoice-writer')}
+            onClick={() => setActiveTab('billing')}
             className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-between group"
           >
             <div className="flex items-center gap-3">
@@ -111,7 +110,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({ setActiveTab }) =>
           </div>
 
           <div 
-            onClick={() => setActiveTab('marketing-hub')}
+            onClick={() => setActiveTab('ai-center')}
             className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-between group"
           >
             <div className="flex items-center gap-3">
