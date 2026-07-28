@@ -5,6 +5,7 @@ import {
   QrCode, Receipt, Wand2, Calculator, Users, ArrowUpRight, Zap, Sparkles 
 } from "lucide-react";
 import { NavigationTab } from "@/types/suite";
+import { ReferralEngine } from "@/components/referral/ReferralEngine";
 
 interface HomeDashboardProps {
   setActiveTab: (tab: NavigationTab) => void;
@@ -142,6 +143,9 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({ setActiveTab }) =>
           </div>
         </div>
       </div>
+
+      {/* Referral Engine Module */}
+      <ReferralEngine />
     </div>
   );
 };
