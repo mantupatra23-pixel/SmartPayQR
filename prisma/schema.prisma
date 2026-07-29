@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -124,7 +125,6 @@ model Merchant {
   resetToken       String?
   resetTokenExpiry DateTime?
 
-  // Profile & Config
   profileImage    String?
   logoUrl         String?
   upiId           String?
@@ -136,23 +136,22 @@ model Merchant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Multi-Tenant Relations
-  users           MerchantUser[]
-  invoices        Invoice[]
-  products        Product[]
-  inventory       StockMovement[]
-  customers       Customer[]
-  suppliers       Supplier[]
-  qrPosters       QrPoster[]
-  aiLogs          AiHistory[]
-  campaigns       Campaign[]
-  auditLogs       AuditLog[]
-  sessions        ActiveSession[]
-  settings        MerchantSettings?
-  gatewayConfig   PaymentGatewayConfig?
-  payments        Payment[]
-  refunds         Refund[]
-  backups         MerchantBackup[]
+  users         MerchantUser[]
+  invoices      Invoice[]
+  products      Product[]
+  inventory     StockMovement[]
+  customers     Customer[]
+  suppliers     Supplier[]
+  qrPosters     QrPoster[]
+  aiLogs        AiHistory[]
+  campaigns     Campaign[]
+  auditLogs     AuditLog[]
+  sessions      ActiveSession[]
+  settings      MerchantSettings?
+  gatewayConfig PaymentGatewayConfig?
+  payments      Payment[]
+  refunds       Refund[]
+  backups       MerchantBackup[]
 
   @@index([email])
   @@index([mobile])
