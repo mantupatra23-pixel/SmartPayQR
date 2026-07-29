@@ -20,7 +20,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: "Super Admin created and synced in Supabase database!",
+      message: "Super Admin initialized successfully in Supabase database!",
       adminEmail: admin.email,
     });
   } catch (error: any) {
