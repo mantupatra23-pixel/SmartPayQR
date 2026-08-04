@@ -1,5 +1,7 @@
-import { redirect } from "next/navigation";
+"use client";
 
-export default function RootPage() {
-  redirect("/dashboard");
+import DashboardPage from "./(dashboard)/dashboard/page";
+
+export default function Home() {
+  return <DashboardPage />;
 }
