@@ -1,10 +1,8 @@
 import React from "react";
-import "@/app/globals.css";
-import { AuthProvider } from "@/components/providers/AuthProvider";
 
 export const metadata = {
-  title: "SmartPay AI OS - Merchant Operating System",
-  description: "Complete AI OS for Indian Merchants with UPI, GST Billing, Inventory, and CRM",
+  title: "SmartPay AI OS",
+  description: "Instant UPI Posters & Merchant OS",
 };
 
 export default function RootLayout({
@@ -14,8 +12,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-slate-100 text-slate-900">
-        <AuthProvider>{children}</AuthProvider>
+      <head>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <body className="bg-slate-950 text-slate-100 min-h-screen antialiased">
+        {children}
       </body>
     </html>
   );
