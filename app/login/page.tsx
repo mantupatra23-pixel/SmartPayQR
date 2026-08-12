@@ -10,24 +10,29 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
+      if (loginError) {
+        setError(loginError.message);
+        setLoading(false);
+      } else {
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err: any) {
+      setError("Unable to connect to the authentication server. Please check your internet connection and try again.");
       setLoading(false);
-    } else {
-      router.push("/dashboard");
-      router.refresh();
     }
   };
 
@@ -36,7 +41,7 @@ export default function LoginPage() {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
         <div className="text-center mb-6">
           <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full uppercase">
-            Supabase Auth • Secure Merchant OS
+            Supabase Secure • Tenant OS
           </span>
           <h1 className="text-2xl font-extrabold text-white mt-3">
             Login to SmartPay AI OS

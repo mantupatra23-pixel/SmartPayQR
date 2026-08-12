@@ -10,32 +10,45 @@ export default function SignupPage() {
   const [fullName, setFullName] = useState("");
   const [shopName, setShopName] = useState("");
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMsg("");
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          shop_name: shopName,
+    try {
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            shop_name: shopName,
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      setError(error.message);
+      if (signUpError) {
+        setError(signUpError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data?.session) {
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        setSuccessMsg("Account created successfully. Please check your email to verify your account before logging in.");
+        setLoading(false);
+      }
+    } catch (err: any) {
+      setError("Unable to connect to the authentication server. Please check your internet connection and try again.");
       setLoading(false);
-    } else {
-      router.push("/dashboard");
-      router.refresh();
     }
   };
 
@@ -44,7 +57,7 @@ export default function SignupPage() {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
         <div className="text-center mb-6">
           <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full uppercase">
-            100% Free • Supabase Tenant
+            Supabase Secure • Tenant OS
           </span>
           <h1 className="text-2xl font-extrabold text-white mt-3">
             Create Merchant Account
@@ -60,6 +73,12 @@ export default function SignupPage() {
           </div>
         )}
 
+        {successMsg && (
+          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-xl">
+            {successMsg}
+          </div>
+        )}
+
         <form onSubmit={handleSignup} className="space-y-3">
           <div>
             <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Full Name *</label>
@@ -69,7 +88,7 @@ export default function SignupPage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="e.g. Mantu Patra"
-              className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
             />
           </div>
 
@@ -81,7 +100,7 @@ export default function SignupPage() {
               value={shopName}
               onChange={(e) => setShopName(e.target.value)}
               placeholder="e.g. Patra General Store"
-              className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
             />
           </div>
 
@@ -93,7 +112,7 @@ export default function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="merchant@dukan.com"
-              className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
             />
           </div>
 
@@ -105,14 +124,14 @@ export default function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-xs text-white focus:outline-none focus:border-emerald-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl text-xs transition shadow-lg shadow-emerald-950 mt-2"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl text-xs transition shadow-lg shadow-emerald-950 mt-2 disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create Merchant Account →"}
           </button>
