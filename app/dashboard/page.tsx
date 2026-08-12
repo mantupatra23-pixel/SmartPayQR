@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function DashboardMaster() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState("dashboard");
+  const router = useRouter();
+  const supabase = createClient();
 
   // Persistent Client State (Simulating full DB persistence across tabs/reloads)
   const [metrics, setMetrics] = useState({ revenue: 0, customers: 0, products: 0, invoices: 0 });
@@ -52,18 +54,20 @@ export default function DashboardMaster() {
   const [ticketSent, setTicketSent] = useState(false);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) {
-        window.location.href = "/login";
+    async function getUser() {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        router.push("/login");
       } else {
-        setUser(currentUser);
+        setUser(user);
         setLoading(false);
-        // Load local persistence if available
-        const savedProds = localStorage.getItem(`smartpay_products_${currentUser.uid}`);
-        const savedCusts = localStorage.getItem(`smartpay_customers_${currentUser.uid}`);
-        const savedInvs = localStorage.getItem(`smartpay_invoices_${currentUser.uid}`);
-        const savedPays = localStorage.getItem(`smartpay_payments_${currentUser.uid}`);
-        const savedBiz = localStorage.getItem(`smartpay_biz_${currentUser.uid}`);
+        
+        // Load local persistence isolated by Supabase UUID
+        const savedProds = localStorage.getItem(`smartpay_products_${user.id}`);
+        const savedCusts = localStorage.getItem(`smartpay_customers_${user.id}`);
+        const savedInvs = localStorage.getItem(`smartpay_invoices_${user.id}`);
+        const savedPays = localStorage.getItem(`smartpay_payments_${user.id}`);
+        const savedBiz = localStorage.getItem(`smartpay_biz_${user.id}`);
 
         if (savedProds) {
           const parsed = JSON.parse(savedProds);
@@ -90,19 +94,20 @@ export default function DashboardMaster() {
           setGstinNum(parsed.gstinNum || "21ABCDE1234F1Z5");
         }
       }
-    });
-    return () => unsub();
-  }, []);
+    }
+    getUser();
+  }, [router, supabase]);
 
   const persistData = (key: string, data: any) => {
     if (user) {
-      localStorage.setItem(`smartpay_${key}_${user.uid}`, JSON.stringify(data));
+      localStorage.setItem(`smartpay_${key}_${user.id}`, JSON.stringify(data));
     }
   };
 
   const handleLogout = async () => {
-    await signOut(auth);
-    window.location.href = "/login";
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
   };
 
   const handleAddProduct = (e: React.FormEvent) => {
@@ -123,7 +128,6 @@ export default function DashboardMaster() {
     setProdPrice("");
     setProdSku("");
     setProdStock("");
-    alert("Product saved successfully to database!");
   };
 
   const handleDeleteProduct = (id: number) => {
@@ -150,7 +154,6 @@ export default function DashboardMaster() {
     setCustName("");
     setCustPhone("");
     setCustEmail("");
-    alert("Customer saved successfully to database!");
   };
 
   const handleDeleteCustomer = (id: number) => {
@@ -179,7 +182,6 @@ export default function DashboardMaster() {
     persistData("invoices", updated);
     setInvCust("");
     setInvAmount("");
-    alert("Invoice created and saved successfully!");
   };
 
   const handleGeneratePaymentQr = (e: React.FormEvent) => {
@@ -220,7 +222,7 @@ export default function DashboardMaster() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 text-xs font-mono">
-        Loading SmartPay AI OS...
+        Loading SmartPay AI OS (Supabase Session)...
       </div>
     );
   }
@@ -319,7 +321,7 @@ export default function DashboardMaster() {
 
           <div className="flex items-center gap-3">
             <span className="text-[10px] font-bold px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
-              🛡️ Secure Tenant
+              🛡️ Supabase Tenant
             </span>
             <div className="w-8 h-8 rounded-full bg-slate-800 text-slate-200 flex items-center justify-center font-bold text-xs border border-slate-700">
               {user?.email ? user.email.charAt(0).toUpperCase() : "M"}
@@ -335,11 +337,11 @@ export default function DashboardMaster() {
               <div className="bg-gradient-to-r from-slate-900 via-emerald-950/30 to-slate-900 p-6 rounded-2xl border border-emerald-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full uppercase tracking-wider">
-                    ISOLATED MERCHANT OS
+                    SUPABASE SECURE MERCHANT OS
                   </span>
                   <h2 className="text-xl font-black text-white mt-2">Welcome Back, Merchant</h2>
                   <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                    All metrics below update instantly upon CRUD operations.
+                    All metrics below update instantly upon database actions.
                   </p>
                 </div>
                 <button 

@@ -1,27 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [shopName, setShopName] = useState("");
   const [fullName, setFullName] = useState("");
+  const [shopName, setShopName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      window.location.href = "/dashboard";
-    } catch (err: any) {
-      setError(err.message || "Failed to register merchant account");
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          shop_name: shopName,
+        },
+      },
+    });
+
+    if (error) {
+      setError(error.message);
       setLoading(false);
+    } else {
+      router.push("/dashboard");
+      router.refresh();
     }
   };
 
@@ -30,7 +44,7 @@ export default function SignupPage() {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
         <div className="text-center mb-6">
           <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full uppercase">
-            100% Free • Isolated Tenant
+            100% Free • Supabase Tenant
           </span>
           <h1 className="text-2xl font-extrabold text-white mt-3">
             Create Merchant Account
