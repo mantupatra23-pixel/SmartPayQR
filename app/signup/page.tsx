@@ -20,7 +20,7 @@ export default function SignupPage() {
       await createUserWithEmailAndPassword(auth, email, password);
       window.location.href = "/dashboard";
     } catch (err: any) {
-      setError(err.message || "Failed to create account");
+      setError(err.message || "Failed to register merchant account");
       setLoading(false);
     }
   };
@@ -29,10 +29,10 @@ export default function SignupPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
         <div className="text-center mb-6">
-          <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
-            100% FREE • ISOLATED TENANT
+          <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full uppercase">
+            100% Free • Isolated Tenant
           </span>
-          <h1 className="text-2xl font-bold text-white mt-3">
+          <h1 className="text-2xl font-extrabold text-white mt-3">
             Create Merchant Account
           </h1>
           <p className="text-xs text-slate-400 mt-1">

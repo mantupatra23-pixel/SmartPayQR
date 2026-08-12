@@ -18,7 +18,7 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "/dashboard";
     } catch (err: any) {
-      setError(err.message || "Failed to login");
+      setError(err.message || "Invalid email or password");
       setLoading(false);
     }
   };
@@ -30,7 +30,7 @@ export default function LoginPage() {
       await signInWithPopup(auth, googleProvider);
       window.location.href = "/dashboard";
     } catch (err: any) {
-      setError(err.message || "Google sign in failed");
+      setError(err.message || "Google Authentication failed");
       setLoading(false);
     }
   };
@@ -39,14 +39,14 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
         <div className="text-center mb-6">
-          <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
-            NPCI COMPLIANT • MERCHANT OS
+          <span className="text-[10px] font-bold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full uppercase">
+            NPCI Compliant • Secure Merchant OS
           </span>
-          <h1 className="text-2xl font-bold text-white mt-3">
+          <h1 className="text-2xl font-extrabold text-white mt-3">
             Login to SmartPay AI OS
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Access your secure merchant database and payment suite.
+            Access your isolated merchant database and billing suite.
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
         <div className="relative flex py-2 items-center mb-4">
           <div className="flex-grow border-t border-slate-800"></div>
-          <span className="flex-shrink mx-4 text-xs text-slate-500">or with email</span>
+          <span className="flex-shrink mx-4 text-xs text-slate-500">or email</span>
           <div className="flex-grow border-t border-slate-800"></div>
         </div>
 
@@ -110,7 +110,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-xs text-slate-500 mt-6">
-          Don't have an account? <a href="/signup" className="text-emerald-400 font-semibold hover:underline">Sign up</a>
+          New merchant? <a href="/signup" className="text-emerald-400 font-semibold hover:underline">Create Account</a>
         </p>
       </div>
     </div>
