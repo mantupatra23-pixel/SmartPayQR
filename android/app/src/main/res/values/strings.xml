@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SmartPayQR</string>
+    <string name="title_activity_main">SmartPayQR</string>
+    <string name="package_name">com.smartpayqr.app</string>
+    <string name="custom_url_scheme">com.smartpayqr.app</string>
+</resources>
