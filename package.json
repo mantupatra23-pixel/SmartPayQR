@@ -1,10 +1,10 @@
 {
-  "name": "smartpay-ai-os",
+  "name": "smartpay-no-code",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -12,32 +12,23 @@
     "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
-    "@next-auth/prisma-adapter": "^1.0.7",
-    "@prisma/client": "^5.22.0",
-    "@supabase/ssr": "^0.12.4",
-    "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.10",
-    "groq-sdk": "^0.5.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "lucide-react": "^0.380.0",
     "next": "14.2.3",
-    "next-auth": "^4.24.7",
     "qrcode.react": "^3.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "resend": "^3.2.0",
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.12.12",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
-    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
   }
