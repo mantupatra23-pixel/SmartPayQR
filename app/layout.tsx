@@ -1,9 +1,10 @@
-import React from "react";
+import type { Metadata } from "next";
+import "./globals.css";
 import { Providers } from "@/components/Providers";
 
-export const metadata = {
-  title: "SmartPay AI OS",
-  description: "Merchant OS & QR Suite",
+export const metadata: Metadata = {
+  title: "SmartPayQR - Instant No-Code Standee & QR Studio",
+  description: "Create instant print-ready UPI payment standees, posters, and digital menus in seconds.",
 };
 
 export default function RootLayout({
@@ -13,10 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <script src="https://cdn.tailwindcss.com"></script>
-      </head>
-      <body className="bg-slate-950 text-slate-100 min-h-screen antialiased">
+      <body className="bg-black text-white antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
