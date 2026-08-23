@@ -1,0 +1,23 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-standee, #printable-standee * {
+    visibility: visible;
+  }
+  #printable-standee {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100% !important;
+    max-width: 480px !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-width: 3px !important;
+  }
+  @page {
+    size: auto;
+    margin: 10mm;
+  }
+}

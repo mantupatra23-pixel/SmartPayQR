@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Providers } from "@/components/Providers";
+import "./print.css";
+import { ToastProvider } from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
-  title: "SmartPayQR - Instant No-Code Standee & QR Studio",
-  description: "Create instant print-ready UPI payment standees, posters, and digital menus in seconds.",
+  title: "SmartPayQR - Free Digital Payment Counter Kit for Indian Merchants",
+  description: "Create instant print-ready UPI payment standees, voice payment announcements, and WhatsApp bills without any login.",
 };
 
 export default function RootLayout({
@@ -14,8 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-black text-white antialiased">
-        <Providers>{children}</Providers>
+      <body className="bg-[#f4f6f8] text-[#152935] antialiased">
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );
