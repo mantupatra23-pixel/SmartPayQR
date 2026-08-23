@@ -2,27 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-slate-50 text-slate-900 antialiased selection:bg-emerald-500 selection:text-white;
-  }
-}
-
-/* Custom Print Styles */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  #printable-poster, #printable-poster * {
-    visibility: visible;
-  }
-  #printable-poster {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-shadow: none !important;
-  }
+body {
+  background-color: #fde5d6;
+  color: #152935;
 }
