@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
-  "releaseDate": "2026-03-30",
-  "notes": "Automatic background UI updates enabled"
+  "version": "1.0.2",
+  "releaseDate": "2026-08-23",
+  "notes": "Dedicated multi-page routing and UI improvements"
 }
