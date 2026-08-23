@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { CITIES, NICHES } from "@/data/seoData";
-import { ArrowLeft, CheckCircle2, Printer, Volume2, MessageCircle, ShieldCheck, Zap, ArrowRight } from "lucide-react";
+import { ArrowLeft, Printer, Volume2, MessageCircle, ArrowRight } from "lucide-react";
 
 export function generateStaticParams() {
   const params: { city: string; niche: string }[] = [];
@@ -62,7 +62,6 @@ export default function SeoToolLandingPage({
       <div>
         <div className="w-full h-2.5 bg-[#e4a576]" />
         
-        {/* Breadcrumb Header */}
         <header className="bg-[#152935] text-white px-4 md:px-8 py-4 border-b border-[#223d4e]">
           <div className="max-w-5xl mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 text-xs font-bold text-[#e4a576] hover:underline">
@@ -73,7 +72,6 @@ export default function SeoToolLandingPage({
         </header>
 
         <main className="max-w-5xl mx-auto px-4 md:px-8 py-10 space-y-10">
-          {/* Hero Section */}
           <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-zinc-200 space-y-6">
             <div className="inline-block bg-[#152935] text-[#e4a576] px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider">
               {niche.name} • {city.name} Merchant Hub
@@ -89,7 +87,7 @@ export default function SeoToolLandingPage({
 
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
-                href={`/standee`}
+                href="/standee"
                 className="bg-[#152935] hover:bg-[#223d4e] text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl transition-all"
               >
                 <Printer className="w-4 h-4 text-[#e4a576]" /> Create Free Standee (Print Ready) <ArrowRight className="w-4 h-4" />
@@ -103,7 +101,6 @@ export default function SeoToolLandingPage({
             </div>
           </div>
 
-          {/* Value Props Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-3xl border border-zinc-200 space-y-3">
               <div className="w-10 h-10 rounded-xl bg-[#fde5d6] text-[#152935] flex items-center justify-center font-black">
@@ -136,7 +133,6 @@ export default function SeoToolLandingPage({
             </div>
           </div>
 
-          {/* Related City Links (SEO Booster) */}
           <div className="bg-white p-6 rounded-3xl border border-zinc-200 space-y-4">
             <h3 className="text-xs font-black text-[#152935] uppercase tracking-wider">
               Explore {niche.name} QR Standees in Other Cities
