@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useMerchant } from "@/hooks/useMerchant";
 import { Header } from "@/components/layout/Header";
@@ -9,13 +9,24 @@ import { MerchantModal } from "@/components/merchant/MerchantModal";
 import { CITIES, NICHES } from "@/data/seoData";
 import { 
   Printer, Volume2, MessageCircle, Smartphone, ArrowRight, 
-  BookOpen, Calculator, ShieldCheck, Zap, Sparkles, ChevronDown, CheckCircle2 
+  BookOpen, Calculator, Sparkles, ChevronDown, CheckCircle2, QrCode
 } from "lucide-react";
 
-export default function ProductionHomePage() {
+export default function AppHomePage() {
   const { profile, saveProfile, resetProfile, isLoaded } = useMerchant();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [isNativeApp, setIsNativeApp] = useState(false);
+
+  useEffect(() => {
+    // Check if running inside Capacitor Android APK or PWA Standalone Mode
+    const isApp = 
+      (window as any).Capacitor !== undefined ||
+      window.matchMedia("(display-mode: standalone)").matches || 
+      (window.navigator as any).standalone === true;
+
+    setIsNativeApp(Boolean(isApp));
+  }, []);
 
   if (!isLoaded) return null;
 
@@ -42,13 +53,96 @@ export default function ProductionHomePage() {
     },
   ];
 
+  /* =========================================================================
+     1. ANDROID APK / STANDALONE APP VIEW (Clean, No SEO/FAQ Clutter)
+     ========================================================================= */
+  if (isNativeApp) {
+    return (
+      <div className="min-h-screen bg-[#152935] text-white flex flex-col justify-between p-4 space-y-6">
+        {/* APK Top Bar */}
+        <div className="flex items-center justify-between pt-2">
+          <div>
+            <h1 className="text-lg font-black tracking-wide text-white">{profile.businessName || "My Counter"}</h1>
+            <p className="text-[10px] font-mono text-[#e4a576]">{profile.upiId}</p>
+          </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-xl text-xs font-bold border border-white/20"
+          >
+            Settings
+          </button>
+        </div>
+
+        {/* APK Core 4-Button Counter Grid */}
+        <div className="grid grid-cols-2 gap-4 flex-1 items-center">
+          <Link
+            href="/standee"
+            className="bg-white/10 hover:bg-white/15 border border-white/10 p-5 rounded-3xl flex flex-col items-center justify-center text-center space-y-2 aspect-square active:scale-95 transition-transform"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-[#e4a576] text-[#152935] flex items-center justify-center">
+              <Printer className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-black uppercase">Standee Studio</span>
+            <span className="text-[9px] text-zinc-300">Generate & Print QR</span>
+          </Link>
+
+          <Link
+            href="/soundbox"
+            className="bg-white/10 hover:bg-white/15 border border-white/10 p-5 rounded-3xl flex flex-col items-center justify-center text-center space-y-2 aspect-square active:scale-95 transition-transform"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-[#698ea2] text-white flex items-center justify-center">
+              <Volume2 className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-black uppercase">Voice Soundbox</span>
+            <span className="text-[9px] text-zinc-300">Announce Amounts</span>
+          </Link>
+
+          <Link
+            href="/khata"
+            className="bg-white/10 hover:bg-white/15 border border-white/10 p-5 rounded-3xl flex flex-col items-center justify-center text-center space-y-2 aspect-square active:scale-95 transition-transform"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-black uppercase">Daily Khata</span>
+            <span className="text-[9px] text-zinc-300">Cash & UPI Log</span>
+          </Link>
+
+          <Link
+            href="/whatsapp-bill"
+            className="bg-white/10 hover:bg-white/15 border border-white/10 p-5 rounded-3xl flex flex-col items-center justify-center text-center space-y-2 aspect-square active:scale-95 transition-transform"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center">
+              <MessageCircle className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-black uppercase">WhatsApp Bill</span>
+            <span className="text-[9px] text-zinc-300">Instant Receipts</span>
+          </Link>
+        </div>
+
+        {/* Floating Quick Terminal Mode */}
+        <Link
+          href="/counter"
+          className="w-full py-4 bg-[#e4a576] hover:bg-[#d89766] text-[#152935] font-black text-xs uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 shadow-2xl active:scale-98"
+        >
+          <QrCode className="w-5 h-5" /> Launch Counter POS Screen
+        </Link>
+
+        <MerchantModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} profile={profile} onSave={saveProfile} onReset={resetProfile} />
+      </div>
+    );
+  }
+
+  /* =========================================================================
+     2. FULL PRODUCTION WEBSITE VIEW (Complete SEO Portal & Marketing)
+     ========================================================================= */
   return (
     <div className="min-h-screen bg-[#f4f6f8] text-[#152935] flex flex-col justify-between">
       <div>
         <Header profile={profile} onEditProfile={() => setIsModalOpen(true)} />
 
         <main className="max-w-6xl mx-auto px-4 md:px-8 py-10 space-y-16">
-          {/* Hero Banner */}
+          {/* Hero Section */}
           <div className="bg-gradient-to-br from-[#152935] via-[#1f3747] to-[#28485c] text-white p-8 md:p-14 rounded-3xl shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
             <div className="space-y-4 max-w-2xl z-10">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur px-3.5 py-1 rounded-full text-xs font-bold text-[#e4a576]">
@@ -68,10 +162,10 @@ export default function ProductionHomePage() {
                   <Printer className="w-4 h-4" /> Open Standee Studio <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
-                  href="/khata"
+                  href="/apk"
                   className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-all"
                 >
-                  <BookOpen className="w-4 h-4 text-[#e4a576]" /> Open Daily Khata
+                  <Smartphone className="w-4 h-4 text-[#e4a576]" /> Download Counter APK
                 </Link>
               </div>
             </div>
@@ -87,7 +181,7 @@ export default function ProductionHomePage() {
             </div>
           </div>
 
-          {/* Core Tools Grid (5 Production Tools) */}
+          {/* Tools Grid */}
           <div className="space-y-6">
             <div className="text-center space-y-1">
               <h2 className="text-2xl md:text-3xl font-serif font-black text-[#152935]">Complete Counter Toolset</h2>
@@ -169,7 +263,7 @@ export default function ProductionHomePage() {
             </div>
           </div>
 
-          {/* Mass Programmatic SEO Traversal Grid */}
+          {/* Regional SEO Hubs */}
           <div className="bg-white p-8 rounded-3xl border border-zinc-200 space-y-6">
             <div className="space-y-1">
               <h2 className="text-lg font-black text-[#152935] uppercase tracking-wide">
