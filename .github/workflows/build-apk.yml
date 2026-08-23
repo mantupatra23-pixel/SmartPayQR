@@ -14,10 +14,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Set up Java JDK 17
@@ -26,13 +26,13 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install Dependencies
+      - name: Install Project Dependencies
         run: npm install --legacy-peer-deps
 
       - name: Build Next.js Static Export
         run: npm run build
 
-      - name: Install Capacitor CLI & Android Platform
+      - name: Install Capacitor CLI & Platform
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android --legacy-peer-deps
           npx cap add android || true
