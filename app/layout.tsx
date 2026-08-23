@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./print.css";
 import { ToastProvider } from "@/components/ui/Toast";
+import { AutoUpdater } from "@/components/pwa/AutoUpdater";
 
 export const metadata: Metadata = {
   title: "SmartPayQR - Free Digital Payment Counter Kit for Indian Merchants",
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#f4f6f8] text-[#152935] antialiased">
         <ToastProvider>
+          <AutoUpdater />
           {children}
         </ToastProvider>
       </body>
