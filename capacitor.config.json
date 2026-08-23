@@ -1,0 +1,13 @@
+{
+  "appId": "com.smartpayqr.app",
+  "appName": "SmartPayQR",
+  "webDir": "out",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#152935"
+  }
+}
