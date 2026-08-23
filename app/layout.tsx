@@ -3,6 +3,7 @@ import "./globals.css";
 import "./print.css";
 import { ToastProvider } from "@/components/ui/Toast";
 import { AutoUpdater } from "@/components/pwa/AutoUpdater";
+import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
   title: "SmartPayQR - Free Digital Payment Counter Kit for Indian Merchants",
@@ -19,7 +20,9 @@ export default function RootLayout({
       <body className="bg-[#f4f6f8] text-[#152935] antialiased">
         <ToastProvider>
           <AutoUpdater />
-          {children}
+          <AppShell>
+            {children}
+          </AppShell>
         </ToastProvider>
       </body>
     </html>
